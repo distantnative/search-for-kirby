@@ -117,28 +117,15 @@ class Index
      *
      * @param string $query
      *
-     * @return \Kirby\Algolia\Results
+     * @return array
      */
-    public function search(string $query = null, $page = 1, array $options = [])
+    public function search(string $query, array $options)
     {
-        // Don't search if nothing is queried
-        if ($query === null || $query === '') {
-            return new Results([]);
-        }
-
         // Generate options with defaults
         $defaults = $this->options['options'] ?? [];
         $options  = array_merge($defaults, $options);
 
-        // Set the page parameter: Algolia uses zero based page indexes
-        // while Kirby's pagination starts at 1
-        $options['page'] = $page ? $page - 1 : 0;
-
-        // Start the search
-        $results = $this->index->search($query, $options);
-
-        // Return a collection of the results
-        return new Results($results);
+        return $this->index->search($query, $options);
     }
 
      /**
