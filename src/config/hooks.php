@@ -2,7 +2,7 @@
 namespace Kirby\Algolia;
 
 function runHook() {
-    if (option('getkirby.algolia.config')['hooks'] === false) {
+    if (option('algolia')['hooks'] === false) {
         return;
     }
 

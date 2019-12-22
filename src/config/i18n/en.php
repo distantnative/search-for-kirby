@@ -2,5 +2,5 @@
 
 return [
     'view.algolia' => 'Search',
-    'algolia.all'  => 'All results'
+    'algolia.all'  => 'All search results'
 ];

@@ -41,7 +41,6 @@
       <div v-if="pagination.total > items.length" class="k-search-more">
         <k-button
           :tooltip="$t('all')"
-          icon="expand"
           @click="onAll"
         >
           {{ $t("algolia.all") }}
@@ -136,7 +135,8 @@ export default {
   object-fit: cover;
 }
 .k-search-more {
-  background: #efefef;
+  background: var(--color-text);
+  color: #fff;
   display: flex;
   justify-content: center;
   padding: .75rem;
