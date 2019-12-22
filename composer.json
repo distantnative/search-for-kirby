@@ -1,0 +1,28 @@
+{
+    "name": "distantnative/algolia",
+    "description": "Algolia for Kirby",
+    "type": "kirby-plugin",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Lukas Bestle",
+            "email": "lukas@getkirby.com"
+        },
+        {
+            "name": "Nico Hoffmann",
+            "email": "nico@getkirby.com"
+        }
+    ],
+    "require": {
+        "getkirby/composer-installer": "^1.1",
+        "algolia/algoliasearch-client-php": "^2.5"
+    },
+    "config": {
+        "optimize-autoloader": true
+    },
+    "autoload": {
+        "psr-4": {
+            "Kirby\\Algolia\\": "src/models/"
+        }
+    }
+}
