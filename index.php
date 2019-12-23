@@ -10,7 +10,8 @@ App::plugin('getkirby/search', [
     'api'   => require 'src/config/api.php',
     'hooks' => require 'src/config/hooks.php',
     'translations' => [
-        'en' => require 'src/config/i18n/en.php'
+        'en' => require 'src/config/i18n/en.php',
+        'de' => require 'src/config/i18n/de.php'
     ],
     'sections' => [
         'search' => []
