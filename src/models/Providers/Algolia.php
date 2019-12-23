@@ -64,7 +64,7 @@ class Algolia extends Provider
         $this->index->replaceAllObjects($objects);
     }
 
-    public function search(string $query, array $options): array
+    public function search(string $query, array $options, $collection = null): array
     {
         // Generate options with defaults
         $options = array_merge($this->options, $options);
@@ -78,6 +78,15 @@ class Algolia extends Provider
 
         // Start the search
         $results = $this->index->search($query, $options);
+
+        // Make sure only results from collection are kept
+        if ($collection !== null) {
+            foreach ($results as $key => $result) {
+                if ($collection->has($result['objectID']) === false) {
+                    unset($results[$key]);
+                }
+            }
+        }
 
         // Algolia uses zero based page indexes
         //while Kirby's pagination starts at 1

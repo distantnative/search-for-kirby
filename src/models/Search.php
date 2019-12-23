@@ -2,6 +2,7 @@
 
 namespace Kirby\Search;
 
+use Kirby\Toolkit\Query;
 
 /**
  * Search class
@@ -72,11 +73,24 @@ class Search
         $this->provider->replace($data);
     }
 
-    public function data(): array
+    public function data($collection = null, $type = null): array
     {
         $data = [];
 
+        // If specific collection is defined
+        if ($collection !== null) {
+            $this->options['collections'] = [
+                $type => $collection
+            ];
+        }
+
         foreach ($this->options['collections'] as $type => $collection) {
+
+            // If collection is defined in query notation
+            if (is_string($collection) === true) {
+                $collection = (new Query($collection, [ 'site' => site(), 'kirby' => kirby()]))->result();
+            }
+
             foreach ($collection as $model) {
                 if ($this->isIndexable($model, $type) === true) {
                     $data[] = $this->toEntry($model, $type);
@@ -92,10 +106,11 @@ class Search
      *
      * @param string $query
      * @param array $options
+     * @param \Kirby\Cms\Collection $collection
      *
      * @return \Kirby\Search\Results
      */
-    public function search(string $query = null, array $options = [])
+    public function search(string $query = null, array $options = [], $collection = null)
     {
         // Don't search if nothing is queried
         if ($query === null || $query === '') {
@@ -107,7 +122,7 @@ class Search
         $options['limit'] = $options['limit'] ?? $this->options['limit'];
 
         // Start the search
-        $results = $this->provider->search($query, $options);
+        $results = $this->provider->search($query, $options, $collection);
 
         // Return a collection of the results
         return new Results($results);

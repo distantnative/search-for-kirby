@@ -3,9 +3,9 @@
 return [
     'limit' => 10,
     'collections' => [
-        'pages' => $pages = site()->index(true)->filterBy('isReadable', true),
-        'files' => $pages->files(),
-        'users' => kirby()->users()
+        'pages' => $pages = 'site.index.filterBy("isReadable", true)',
+        'files' => $pages . '.files',
+        'users' => 'kirby.users'
     ],
     'fields' => [
         'pages' => [

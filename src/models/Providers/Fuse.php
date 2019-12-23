@@ -30,18 +30,11 @@ class Fuse extends Provider
 
     public function replace(array $objects): void {}
 
-    public function search(string $query, array $options): array
+    public function search(string $query, array $options, $collection = null): array
     {
         // Generate options with defaults
         $options = array_merge($this->options, $options);
-        $data    = $this->index->data();
-
-        // If necessary, filter by collection
-        if ($options['filters'] ?? false) {
-            $data = array_filter($data, function ($entry) use ($options) {
-                return $entry['_tags'] === $options['filters'];
-            });
-        }
+        $data    = $this->index->data($collection, $options['filters'] ?? null);
 
         // Get all fields and remove unsearchable fields
         $keys = call_user_func_array('array_merge', $data);

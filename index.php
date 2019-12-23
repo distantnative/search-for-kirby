@@ -29,21 +29,11 @@ App::plugin('getkirby/search', [
                 $options['filters'] = 'users';
             }
 
-            // Get results from index
-            $results = search($query, $options);
-
-            // Make sure only results from collection are kept
-            foreach ($results as $result) {
-                if ($collection->has($result->id()) === false) {
-                    $results->remove($result);
-                }
-            }
-
-            return $results;
+            return search($query, $options, $collection);
         }
     ]
 ]);
 
-function search(string $query = null, $options = []) {
-    return Search::instance()->search($query, $options);
+function search(string $query = null, $options = [], $collection = null) {
+    return Search::instance()->search($query, $options, $collection);
 }

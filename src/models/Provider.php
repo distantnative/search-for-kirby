@@ -19,7 +19,7 @@ abstract class Provider
      */
     protected $options;
 
-    abstract public function search(string $query, array $options): array;
+    abstract public function search(string $query, array $options, $collection = null): array;
 
     abstract public function replace(array $objects): void;
     abstract public function insert(array $object): void;
