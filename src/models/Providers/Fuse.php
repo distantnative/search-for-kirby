@@ -36,6 +36,13 @@ class Fuse extends Provider
         $options = array_merge($this->options, $options);
         $data    = $this->index->data();
 
+        // If necessary, filter by collection
+        if ($options['filters'] ?? false) {
+            $data = array_filter($data, function ($entry) use ($options) {
+                return $entry['_tags'] === $options['filters'];
+            });
+        }
+
         // Get all fields and remove unsearchable fields
         $keys = call_user_func_array('array_merge', $data);
         unset($keys['objectID'], $keys['_tags']);
