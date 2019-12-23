@@ -1,18 +1,18 @@
 <?php
 
-namespace Kirby\Algolia;
+namespace Kirby\Search\Index;
 
 use Kirby\Cms\ModelWithContent;
 
 /**
- * Index modifications
+ * Modification actions
  *
  * @author Nico Hoffmann <nico@getkirby.com>
  * @author Lukas Bestle <lukas@getkirby.com>
  * @license MIT
  * @link https://getkirby.com
  */
-trait hasModifiers
+trait hasActions
 {
 
     /**
@@ -29,7 +29,7 @@ trait hasModifiers
         }
 
         $object = $this->format($model, $type);
-        $this->index->saveObject($object);
+        $this->provider->insert($object);
     }
 
     /**
@@ -47,7 +47,7 @@ trait hasModifiers
         }
 
         $object = $this->format($model, $type);
-        $this->index->saveObject($object);
+        $this->provider->update($object);
     }
 
     /**
@@ -79,6 +79,6 @@ trait hasModifiers
             $id = $id->id();
         }
 
-        $this->index->deleteObject($id);
+        $this->provider->delete($id);
     }
 }

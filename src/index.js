@@ -1,19 +1,19 @@
 import Section from "./components/Section.vue";
-import Search from "./components/Search.vue";
+import Modal from "./components/Modal.vue";
 import View from "./components/View.vue";
 
-panel.plugin("getkirby/algolia", {
+panel.plugin("getkirby/search", {
   sections: {
-    algolia: Section
+    search: Section
   },
   views: {
-    algolia: {
+    search: {
       menu: false,
       icon: "search",
       component: View
     }
   },
   components: {
-    "k-search": Search
+    "k-search": Modal
   }
 });

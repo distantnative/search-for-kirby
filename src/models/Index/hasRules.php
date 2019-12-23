@@ -1,19 +1,19 @@
 <?php
 
-namespace Kirby\Algolia;
+namespace Kirby\Search\Index;
 
 use Closure;
 use Kirby\Cms\ModelWithContent;
 
 /**
- * Index search
+ * Index rules
  *
  * @author Nico Hoffmann <nico@getkirby.com>
  * @author Lukas Bestle <lukas@getkirby.com>
  * @license MIT
  * @link https://getkirby.com
  */
-trait hasRestrictions
+trait hasRules
 {
     /**
      * Checks if a specific model should be included in the Algolia index

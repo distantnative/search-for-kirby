@@ -9,7 +9,7 @@ return array(
     'Psr\\SimpleCache\\' => array($vendorDir . '/psr/simple-cache/src'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
     'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-message/src'),
-    'Kirby\\Algolia\\' => array($baseDir . '/src/models'),
+    'Kirby\\Search\\' => array($baseDir . '/src/models'),
     'Kirby\\' => array($vendorDir . '/getkirby/composer-installer/src'),
     'Algolia\\AlgoliaSearch\\' => array($vendorDir . '/algolia/algoliasearch-client-php/src'),
 );

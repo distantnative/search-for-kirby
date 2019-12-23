@@ -1,6 +1,6 @@
 {
-    "name": "distantnative/algolia",
-    "description": "Algolia for Kirby",
+    "name": "getkirby/search",
+    "description": "Search for Kirby",
     "type": "kirby-plugin",
     "license": "MIT",
     "authors": [
@@ -22,7 +22,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Kirby\\Algolia\\": "src/models/"
+            "Kirby\\Search\\": "src/models/"
         }
     }
 }

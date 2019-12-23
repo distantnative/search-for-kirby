@@ -1,6 +1,6 @@
 <?php
 
-namespace Kirby\Algolia;
+namespace Kirby\Search;
 
 use Kirby\Cms\Collection;
 use Kirby\Toolkit\Str;
@@ -17,18 +17,14 @@ class Search
 {
 
     /**
-     * @return \Kirby\Algolia\Results
+     * @return \Kirby\Search\Results
      */
-    static public function all(string $query = null, $page = 1, array $options = [])
+    static public function all(string $query = null, array $options = [])
     {
         // Don't search if nothing is queried
         if ($query === null || $query === '') {
             return new Results([]);
         }
-
-        // Set the page parameter: Algolia uses zero based page indexes
-        // while Kirby's pagination starts at 1
-        $options['page'] = $page ? $page - 1 : 0;
 
         // Start the search
         $results = Index::instance()->search($query, $options);
@@ -51,7 +47,7 @@ class Search
         }
 
         // Get results from index
-        $results = static::all($query, null, $options);
+        $results = static::all($query, $options);
 
         // Make sure only results from collection are kept
         foreach ($results as $result) {

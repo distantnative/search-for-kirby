@@ -39,11 +39,8 @@
         </li>
       </ul>
       <div v-if="pagination.total > items.length" class="k-search-more">
-        <k-button
-          :tooltip="$t('all')"
-          @click="onAll"
-        >
-          {{ $t("algolia.all") }}
+        <k-button @click="onAll">
+          {{ $t("search.all") }}
         </k-button>
       </div>
     </div>
@@ -68,7 +65,7 @@ export default {
   },
   methods: {
     search(query) {
-      this.$api.get("algolia", {
+      this.$api.get("search", {
         q: query,
         page: this.pagination.page,
         select: [
@@ -112,7 +109,7 @@ export default {
       });
     },
     onAll() {
-      this.$router.push({ path: "/plugins/algolia", query: { q: this.q }})
+      this.$router.push({ path: "/plugins/search", query: { q: this.q }})
       this.$store.dispatch("search", false);
     }
   }

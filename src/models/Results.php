@@ -1,6 +1,6 @@
 <?php
 
-namespace Kirby\Algolia;
+namespace Kirby\Search;
 
 // Kirby dependencies
 use Kirby\Cms\Pagination;
@@ -110,15 +110,13 @@ class Results extends Collection
      */
     protected function toModel(array $hit)
     {
-        $kirby = kirby();
-
         switch ($hit['_tags']) {
             case 'pages':
-                return $kirby->page($hit['objectID']);
+                return kirby()->page($hit['objectID']);
             case 'files':
-                return $kirby->file($hit['objectID']);
+                return kirby()->file($hit['objectID']);
             case 'users':
-                return $kirby->user($hit['objectID']);
+                return kirby()->user($hit['objectID']);
         }
     }
 

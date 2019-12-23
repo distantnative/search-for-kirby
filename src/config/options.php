@@ -2,6 +2,11 @@
 
 return [
     'index' => 'kirby',
+    'collections' => [
+        'pages' => $pages = site()->index(true)->filterBy('isReadable', true),
+        'files' => $pages->files(),
+        'users' => kirby()->users()
+    ],
     'fields' => [
         'pages' => [
             'title',

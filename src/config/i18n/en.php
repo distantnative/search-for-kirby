@@ -1,6 +1,6 @@
 <?php
 
 return [
-    'view.algolia' => 'Search',
-    'algolia.all'  => 'All search results'
+    'view.search' => 'Search',
+    'search.all'  => 'All search results'
 ];

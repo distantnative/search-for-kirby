@@ -13,7 +13,7 @@
 export default {
   methods: {
     build() {
-      this.$api.post("algolia");
+      this.$api.post("search");
     }
   }
 }

@@ -11,10 +11,10 @@
 </template>
 
 <script>
-import Extends from "./Search";
+import Modal from "./Modal";
 
 export default {
-  extends: Extends,
+  extends: Modal,
   watch: {
     "$route.query.q": {
       handler(query) {

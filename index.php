@@ -2,18 +2,18 @@
 
 use Kirby\Cms\App;
 use Kirby\Cms\Collection;
-use Kirby\Algolia\Search;
+use Kirby\Search\Search;
 
 include __DIR__ . '/vendor/autoload.php';
 
-App::plugin('getkirby/algolia', [
+App::plugin('getkirby/search', [
     'api'   => require 'src/config/api.php',
     'hooks' => require 'src/config/hooks.php',
     'translations' => [
         'en' => require 'src/config/i18n/en.php'
     ],
     'sections' => [
-        'algolia' => []
+        'search' => []
     ],
     'components' => [
         'search' => function (App $kirby, Collection $collection, string $query = null, $params = []) {
@@ -22,6 +22,6 @@ App::plugin('getkirby/algolia', [
     ]
 ]);
 
-function algolia(string $query = null, $options = [], $page = 1) {
-    return Search::all($query, $page, $options);
+function search(string $query = null, $options = []) {
+    return Search::all($query, $options);
 }

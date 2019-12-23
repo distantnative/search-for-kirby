@@ -20,7 +20,7 @@ class ComposerStaticInit8466cd401734fc5b7f8b413ae5a110bd
         ),
         'K' => 
         array (
-            'Kirby\\Algolia\\' => 14,
+            'Kirby\\Search\\' => 13,
             'Kirby\\' => 6,
         ),
         'A' => 
@@ -42,7 +42,7 @@ class ComposerStaticInit8466cd401734fc5b7f8b413ae5a110bd
         array (
             0 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
-        'Kirby\\Algolia\\' => 
+        'Kirby\\Search\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src/models',
         ),
@@ -116,14 +116,18 @@ class ComposerStaticInit8466cd401734fc5b7f8b413ae5a110bd
         'Algolia\\AlgoliaSearch\\SearchIndex' => __DIR__ . '/..' . '/algolia/algoliasearch-client-php/src/SearchIndex.php',
         'Algolia\\AlgoliaSearch\\Support\\Helpers' => __DIR__ . '/..' . '/algolia/algoliasearch-client-php/src/Support/Helpers.php',
         'Algolia\\AlgoliaSearch\\Support\\UserAgent' => __DIR__ . '/..' . '/algolia/algoliasearch-client-php/src/Support/UserAgent.php',
-        'Kirby\\Algolia\\Files' => __DIR__ . '/../..' . '/src/models/Files.php',
-        'Kirby\\Algolia\\Index' => __DIR__ . '/../..' . '/src/models/Index.php',
-        'Kirby\\Algolia\\Pages' => __DIR__ . '/../..' . '/src/models/Pages.php',
-        'Kirby\\Algolia\\Search' => __DIR__ . '/../..' . '/src/models/Search.php',
         'Kirby\\ComposerInstaller\\CmsInstaller' => __DIR__ . '/..' . '/getkirby/composer-installer/src/ComposerInstaller/CmsInstaller.php',
         'Kirby\\ComposerInstaller\\Installer' => __DIR__ . '/..' . '/getkirby/composer-installer/src/ComposerInstaller/Installer.php',
         'Kirby\\ComposerInstaller\\Plugin' => __DIR__ . '/..' . '/getkirby/composer-installer/src/ComposerInstaller/Plugin.php',
         'Kirby\\ComposerInstaller\\PluginInstaller' => __DIR__ . '/..' . '/getkirby/composer-installer/src/ComposerInstaller/PluginInstaller.php',
+        'Kirby\\Search\\Index' => __DIR__ . '/../..' . '/src/models/Index.php',
+        'Kirby\\Search\\Index\\hasActions' => __DIR__ . '/../..' . '/src/models/Index/hasActions.php',
+        'Kirby\\Search\\Index\\hasRules' => __DIR__ . '/../..' . '/src/models/Index/hasRules.php',
+        'Kirby\\Search\\Index\\hasSchema' => __DIR__ . '/../..' . '/src/models/Index/hasSchema.php',
+        'Kirby\\Search\\Provider' => __DIR__ . '/../..' . '/src/models/Provider.php',
+        'Kirby\\Search\\Provider\\Algolia' => __DIR__ . '/../..' . '/src/models/Provider/Algolia.php',
+        'Kirby\\Search\\Results' => __DIR__ . '/../..' . '/src/models/Results.php',
+        'Kirby\\Search\\Search' => __DIR__ . '/../..' . '/src/models/Search.php',
         'Psr\\Http\\Message\\MessageInterface' => __DIR__ . '/..' . '/psr/http-message/src/MessageInterface.php',
         'Psr\\Http\\Message\\RequestInterface' => __DIR__ . '/..' . '/psr/http-message/src/RequestInterface.php',
         'Psr\\Http\\Message\\ResponseInterface' => __DIR__ . '/..' . '/psr/http-message/src/ResponseInterface.php',

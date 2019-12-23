@@ -1,15 +1,17 @@
 <?php
-namespace Kirby\Algolia;
+namespace Kirby\Search;
 
 function runHook() {
-    if (option('algolia')['hooks'] === false) {
+    $index = Index::instance();
+
+    if ($index->option('hooks') === false) {
         return;
     }
 
     $args = func_get_args();
     $action = $args[0];
     $parameters = array_slice($args, 1);
-    call_user_func_array([Index::instance(), $action], $parameters);
+    call_user_func_array([$index, $action], $parameters);
 }
 
 return [

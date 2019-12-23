@@ -3,28 +3,27 @@
 return [
     'routes' => [
         [
-            'pattern' => 'algolia',
+            'pattern' => 'search',
             'method'  => 'GET',
             'action'  => function () {
-                return algolia(
+                return search(
                     $this->requestQuery('q'),
-                    [],
-                    $this->requestQuery('page') ?? 1
+                    ['page' => $this->requestQuery('page') ?? 1]
                 );
             }
         ],
         [
-            'pattern' => 'algolia',
+            'pattern' => 'search',
             'method'  => 'POST',
             'action'  => function () {
-                Kirby\Algolia\Index::instance()->build();
+                Kirby\Search\Index::instance()->build();
                 return true;
             }
         ]
     ],
     'collections' => [
         'results' => [
-            'type'  => 'Kirby\Algolia\Results'
+            'type'  => 'Kirby\Search\Results'
         ]
     ]
 ];
