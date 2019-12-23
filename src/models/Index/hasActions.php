@@ -28,7 +28,7 @@ trait hasActions
             return false;
         }
 
-        $object = $this->format($model, $type);
+        $object = $this->toEntry($model, $type);
         $this->provider->insert($object);
     }
 
@@ -46,7 +46,7 @@ trait hasActions
             return false;
         }
 
-        $object = $this->format($model, $type);
+        $object = $this->toEntry($model, $type);
         $this->provider->update($object);
     }
 
