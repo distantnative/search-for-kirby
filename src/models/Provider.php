@@ -19,11 +19,6 @@ abstract class Provider
      */
     protected $options;
 
-    public function __construct(array $options = [])
-    {
-        $this->options = $options;
-    }
-
     abstract public function search(string $query, array $options): array;
 
     abstract public function replace(array $objects): void;

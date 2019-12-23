@@ -17,11 +17,32 @@ App::plugin('getkirby/search', [
     ],
     'components' => [
         'search' => function (App $kirby, Collection $collection, string $query = null, $params = []) {
-            return Search::collection($collection, $query, $params);
+            $options = [];
+
+            // Filter index by model type
+            if (is_a($collection, 'Kirby\Cms\Pages') === true) {
+                $options['filters'] = 'pages';
+            } else if (is_a($collection, 'Kirby\Cms\Files') === true) {
+                $options['filters'] = 'files';
+            } else if (is_a($collection, 'Kirby\Cms\Users') === true) {
+                $options['filters'] = 'users';
+            }
+
+            // Get results from index
+            $results = search($query, $options);
+
+            // Make sure only results from collection are kept
+            foreach ($results as $result) {
+                if ($collection->has($result->id()) === false) {
+                    $results->remove($result);
+                }
+            }
+
+            return $results;
         }
     ]
 ]);
 
 function search(string $query = null, $options = []) {
-    return Search::all($query, $options);
+    return Search::instance()->search($query, $options);
 }

@@ -1,12 +1,12 @@
 <template>
-  <k-view class="k-algolia-view">
-    <k-header>
-      {{ $t("view.algolia") }}: {{ q }}
+  <k-view class="k-search-view">
+    <k-header @click.native="$store.dispatch('search', true)">
+      {{ $t("view.search") }}:
+      <span ref="input" class="k-search-view-term">{{ q }}</span>
     </k-header>
 
     <k-collection layout="list" :items="listItems" :pagination="pagination" @paginate="paginate" />
 
-    <input type="hidden" ref="input" />
   </k-view>
 </template>
 
@@ -41,3 +41,9 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+.k-search-view-term {
+  font-weight: 300;
+}
+</style>

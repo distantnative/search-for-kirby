@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'index' => 'kirby',
+    'limit' => 10,
     'collections' => [
         'pages' => $pages = site()->index(true)->filterBy('isReadable', true),
         'files' => $pages->files(),
@@ -9,8 +9,7 @@ return [
     ],
     'fields' => [
         'pages' => [
-            'title',
-            'text'
+            'title'
         ],
         'files' => [
             'filename'
@@ -26,7 +25,10 @@ return [
         }
     ],
     'hooks' => true,
-    'options' => [
-
+    'fuse'=> [
+        'minMatchCharLength' => 2,
+        'threshold'          => 0.4,
+        'distance'           => 60,
+        'findAllMatches'     => true
     ]
 ];

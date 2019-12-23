@@ -16,7 +16,7 @@ return [
             'pattern' => 'search',
             'method'  => 'POST',
             'action'  => function () {
-                Kirby\Search\Index::instance()->build();
+                Kirby\Search\Search::instance()->index();
                 return true;
             }
         ]

@@ -7,7 +7,7 @@ use Kirby\Cms\Pagination;
 use Kirby\Cms\Collection;
 
 /**
- * Collection wrapper for Algolia results
+ * Collection wrapper for search results
  *
  * @author Lukas Bestle <lukas@getkirby.com>
  * @author Nico Hoffmann <nico@getkirby.com>
@@ -26,26 +26,12 @@ class Results extends Collection
     /**
      * Class constructor
      *
-     * @param array $results Returned data from an Algolia search operation
+     * @param array $results Returned data from an search operation
      */
     public function __construct(array $results)
     {
-        // Defaults in case the results are invalid
-        $defaults = [
-            'hits'             => [],
-            'page'             => 0,
-            'nbHits'           => 0,
-            'nbPages'          => 0,
-            'hitsPerPage'      => 20,
-            'processingTimeMS' => 0,
-            'query'            => '',
-            'params'           => ''
-        ];
-
-        $results = array_merge($defaults, $results);
-
         // Convert the hits to model objects
-        $hits = array_map([$this, 'toModel'], $results['hits']);
+        $hits = array_map([$this, 'toModel'], $results['hits'] ?? []);
 
         // Remove hits that could not be converted
         $hits = array_filter($hits, function($hit) {
@@ -54,52 +40,15 @@ class Results extends Collection
 
         // Store the results
         parent::__construct($hits);
-
-        // Get metadata from the results
-        // Algolia uses zero based page indexes while Kirby's pagination starts at 1
-        $this->totalCount     = $results['nbHits'];
-        $this->processingTime = $results['processingTimeMS'];
-        $this->searchQuery    = $results['query'];
-        $this->params         = $results['params'];
+        $this->totalCount = $results['total'] ?? 0;
 
         // Paginate the collection
         $this->pagination = new Pagination([
-            'page'  => $results['page'] + 1,
-            'total' => $results['nbHits'],
-            'limit' => $results['hitsPerPage'],
+            'page'  => $results['page'] ?? 1,
+            'total' => $results['total'] ?? 0,
+            'limit' => $results['limit'] ?? 20,
         ]);
 
-    }
-
-    /**
-     * Returns the Algolia search parameter string
-     * Useful when debugging search requests
-     *
-     * @return string
-     */
-    public function params(): string
-    {
-        return $this->params;
-    }
-
-    /**
-    * Returns the Algolia server processing time in ms
-    *
-    * @return int
-    */
-    public function processingTime(): int
-    {
-        return $this->processingTime;
-    }
-
-    /**
-    * Returns the search query
-    *
-    * @return string
-    */
-    public function searchQuery(): string
-    {
-        return $this->searchQuery;
     }
 
     /**

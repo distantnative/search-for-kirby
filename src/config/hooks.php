@@ -2,16 +2,16 @@
 namespace Kirby\Search;
 
 function runHook() {
-    $index = Index::instance();
+    $search = Search::instance();
 
-    if ($index->option('hooks') === false) {
+    if ($search->options['hooks'] === false) {
         return;
     }
 
     $args = func_get_args();
     $action = $args[0];
     $parameters = array_slice($args, 1);
-    call_user_func_array([$index, $action], $parameters);
+    call_user_func_array([$search, $action], $parameters);
 }
 
 return [
