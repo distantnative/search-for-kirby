@@ -2,7 +2,7 @@
 
 use Kirby\Cms\App;
 use Kirby\Cms\Collection;
-use Kirby\Search\Search;
+use Kirby\Search\Index;
 
 include __DIR__ . '/vendor/autoload.php';
 
@@ -18,22 +18,15 @@ App::plugin('getkirby/search', [
     ],
     'components' => [
         'search' => function (App $kirby, Collection $collection, string $query = null, $params = []) {
-            $options = [];
-
-            // Filter index by model type
-            if (is_a($collection, 'Kirby\Cms\Pages') === true) {
-                $options['filters'] = 'pages';
-            } else if (is_a($collection, 'Kirby\Cms\Files') === true) {
-                $options['filters'] = 'files';
-            } else if (is_a($collection, 'Kirby\Cms\Users') === true) {
-                $options['filters'] = 'users';
-            }
-
-            return search($query, $options, $collection);
+            return search($query, [], $collection);
         }
     ]
 ]);
 
 function search(string $query = null, $options = [], $collection = null) {
-    return Search::instance()->search($query, $options, $collection);
+    return Index::instance()->search(
+        $query,
+        $options,
+        $collection
+    );
 }

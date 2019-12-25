@@ -22,7 +22,7 @@ trait hasSchema
      * @param  ModelWithContent $model
      * @return array
      */
-    protected function toEntry(ModelWithContent $model, $type): array
+    public function toEntry(ModelWithContent $model, $type): array
     {
         $fields    = $this->options['fields'][$type];
         $templates = $this->options['templates'][$type] ?? [];
@@ -131,5 +131,25 @@ trait hasSchema
         }
 
         return $result;
+    }
+
+    /**
+     * Return type for collection
+     *
+     * @param \Kirby\Cms\Collection|null $collection
+     *
+     * @return string|false
+     */
+    static public function toCollectionType($collection = null)
+    {
+        if (is_a($collection, 'Kirby\Cms\Pages') === true) {
+            return 'pages';
+        } else if (is_a($collection, 'Kirby\Cms\Files') === true) {
+            return 'files';
+        } else if (is_a($collection, 'Kirby\Cms\Users') === true) {
+            return 'users';
+        }
+
+        return false;
     }
 }

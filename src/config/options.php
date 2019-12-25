@@ -30,5 +30,8 @@ return [
         'threshold'          => 0.4,
         'distance'           => 60,
         'findAllMatches'     => true
+    ],
+    'sqlite' => [
+        'root' => dirname(__DIR__, 4) . '/logs/search.sqlite'
     ]
 ];

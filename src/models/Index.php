@@ -5,14 +5,14 @@ namespace Kirby\Search;
 use Kirby\Toolkit\Query;
 
 /**
- * Search class
+ * Index class
  *
  * @author Lukas Bestle <lukas@getkirby.com>
  * @author Nico Hoffmann <nico@getkirby.com>
  * @license MIT
  * @link https://getkirby.com
  */
-class Search
+class Index
 {
 
     use Index\hasActions;
@@ -55,7 +55,7 @@ class Search
     /**
      * Returns a singleton instance of the Algolia class
      *
-     * @return \Kirby\Search\Search
+     * @return \Kirby\Search\Index
      */
     public static function instance(): self
     {
@@ -63,26 +63,24 @@ class Search
     }
 
     /**
-     * Create index data and sent to provider
+     * Send data to provider for creating index
      *
      * @return void
      */
-    public function index(): void
+    public function build(): void
     {
         $data = $this->data();
         $this->provider->replace($data);
     }
 
-    public function data($collection = null, $type = null): array
+    /**
+     * Create data from all models
+     *
+     * @return array
+     */
+    public function data(): array
     {
         $data = [];
-
-        // If specific collection is defined
-        if ($collection !== null) {
-            $this->options['collections'] = [
-                $type => $collection
-            ];
-        }
 
         foreach ($this->options['collections'] as $type => $collection) {
 
@@ -121,10 +119,7 @@ class Search
         $options['page']  = $options['page'] ?? 1;
         $options['limit'] = $options['limit'] ?? $this->options['limit'];
 
-        // Start the search
-        $results = $this->provider->search($query, $options, $collection);
-
         // Return a collection of the results
-        return new Results($results);
+        return $this->provider->search($query, $options, $collection);
     }
 }

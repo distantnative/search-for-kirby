@@ -22,7 +22,7 @@ trait hasRules
      * @param  ModelWithContent $model
      * @return bool
      */
-    protected function isIndexable(ModelWithContent $model, string $type)
+    public function isIndexable(ModelWithContent $model, string $type)
     {
         // Get model type specific options
         $templates = $this->options['templates'][$type] ?? [];

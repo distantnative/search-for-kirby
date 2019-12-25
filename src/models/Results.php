@@ -34,9 +34,9 @@ class Results extends Collection
         $hits = array_map([$this, 'toModel'], $results['hits'] ?? []);
 
         // Remove hits that could not be converted
-        $hits = array_filter($hits, function($hit) {
-            return is_object($hit) === true;
-        });
+        // $hits = array_filter($hits, function($hit) {
+        //     return is_object($hit) === true;
+        // });
 
         // Store the results
         parent::__construct($hits);
@@ -57,7 +57,7 @@ class Results extends Collection
      * @param array $hit
      * @return \Kirby\Cms\ModelWithContent
      */
-    protected function toModel(array $hit)
+    protected function toModel($hit)
     {
         switch ($hit['_tags']) {
             case 'pages':

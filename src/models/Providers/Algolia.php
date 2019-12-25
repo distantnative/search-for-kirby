@@ -3,8 +3,9 @@
 namespace Kirby\Search\Providers;
 
 use Exception;
-use Kirby\Search\Search;
+use Kirby\Search\Index;
 use Kirby\Search\Provider;
+use Kirby\Search\Results;
 
 // Vendor dependencies
 use Algolia\AlgoliaSearch\SearchClient as Client;
@@ -20,11 +21,6 @@ class Algolia extends Provider
 {
 
     /**
-     * Current index
-     */
-    protected $index;
-
-    /**
      * Algolia client instance
      *
      * @var \Algolia\AlgoliaSearch\SearchClient
@@ -36,9 +32,9 @@ class Algolia extends Provider
      *
      * @param \Kirby\Search\Search $search
      */
-    public function __construct(Search $search)
+    public function __construct(Index $index)
     {
-        $this->options = $search->options['algolia'] ?? [];
+        $this->options = $index->options['algolia'] ?? [];
 
         if (isset(
             $this->options['app'],
@@ -52,64 +48,79 @@ class Algolia extends Provider
             $this->options['key']
         );
 
-        $this->index = $this->algolia->initIndex($this->options['index'] ?? 'kirby');
+        // Initialize Algolia index
+        $this->store = $this->algolia->initIndex($this->options['index'] ?? 'kirby');
     }
 
+    /**
+     * Fill Algolia index with data
+     *
+     * @param array $data
+     * @return void
+     */
     public function replace(array $objects): void
     {
-        $this->index->setSettings([
+        $this->store->setSettings([
             'customRanking' => ['desc(_tags)']
         ]);
 
-        $this->index->replaceAllObjects($objects);
+        $this->store->replaceAllObjects($objects);
     }
 
-    public function search(string $query, array $options, $collection = null): array
+    /**
+     * Send search query to Algolia and process results
+     *
+     * @param string $query
+     * @param array $options
+     * @param \Kirby\Cms\Collection|null $collection
+     *
+     * @return array
+     */
+    public function search(string $query, array $options, $collection = null)
     {
         // Generate options with defaults
         $options = array_merge($this->options, $options);
 
-        // Set the page parameter: Algolia uses zero based page indexes
-        // while Kirby's pagination starts at 1
+        // Set the page parameter: Algolia uses zero based page
+        // indexes while Kirby's pagination starts at 1
         $options['page'] = $options['page'] - 1;
 
         // Map the plugin option to algolia option
         $options['hitsPerPage'] = $options['limit'];
 
+        // Filter by collection type
+        if ($filters = Index::toCollectionType($collection)) {
+            $options['filters'] = $filters;
+        }
+
         // Start the search
-        $results = $this->index->search($query, $options);
+        $results = $this->store->search($query, $options);
 
         // Make sure only results from collection are kept
-        if ($collection !== null) {
-            foreach ($results as $key => $result) {
-                if ($collection->has($result['objectID']) === false) {
-                    unset($results[$key]);
-                }
-            }
-        }
+        $results = $this->filterByCollection($results, $collection);
 
         // Algolia uses zero based page indexes
         //while Kirby's pagination starts at 1
-        return [
+        return new Results([
             'hits'  => $results['hits'],
             'page'  => $results['page'] + 1,
             'total' => $results['nbHits'],
             'limit' => $results['hitsPerPage']
-        ];
+        ]);
     }
 
     public function insert(array $object): void
     {
-        $this->index->saveObject($object);
+        $this->store->saveObject($object);
     }
 
     public function update(array $object): void
     {
-        $this->index->saveObject($object);
+        $this->store->saveObject($object);
     }
 
     public function delete(string $id): void
     {
-        $this->index->deleteObject($id);
+        $this->store->deleteObject($id);
     }
 }
