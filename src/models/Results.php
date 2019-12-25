@@ -59,13 +59,13 @@ class Results extends Collection
      */
     protected function toModel($hit)
     {
-        switch ($hit['_tags']) {
+        switch ($hit['_type']) {
             case 'pages':
-                return kirby()->page($hit['objectID']);
+                return kirby()->page($hit['id']);
             case 'files':
-                return kirby()->file($hit['objectID']);
+                return kirby()->file($hit['id']);
             case 'users':
-                return kirby()->user($hit['objectID']);
+                return kirby()->user($hit['id']);
         }
     }
 

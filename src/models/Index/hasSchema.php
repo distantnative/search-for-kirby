@@ -4,6 +4,7 @@ namespace Kirby\Search\Index;
 
 use Kirby\Cms\Field;
 use Kirby\Cms\ModelWithContent;
+use Kirby\Toolkit\Query;
 
 /**
  * Schema alterations
@@ -102,8 +103,8 @@ trait hasSchema
             }
         }
 
-        $data['_tags']    = $type;
-        $data['objectID'] = $model->id();
+        $data['id']    = $model->id();
+        $data['_type'] = $type;
 
         return $data;
     }
@@ -131,6 +132,22 @@ trait hasSchema
         }
 
         return $result;
+    }
+
+    /**
+     * Turns a query string to collection
+     *
+     * @param string $query
+     *
+     * @return \Kirby\Cms\Collection
+     */
+    protected function toCollection(string $query)
+    {
+        $query = new Query($query, [
+            'site' => site(),
+            'kirby' => kirby()
+        ]);
+        return $query->result();
     }
 
     /**

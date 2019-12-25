@@ -21,7 +21,7 @@ class Fuse extends Provider
     /**
      * Constructor
      *
-     * @param \Kirby\Search\Search $search
+     * @param \Kirby\Search\Index $search
      */
     public function __construct(Index $index)    {
         $this->options = $index->options['fuse'] ?? [];
@@ -89,6 +89,5 @@ class Fuse extends Provider
      */
     public function replace(array $objects): void {}
     public function insert(array $object): void {}
-    public function update(array $object): void {}
     public function delete(string $id): void {}
 }

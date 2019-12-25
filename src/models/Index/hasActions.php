@@ -39,7 +39,7 @@ trait hasActions
      * @param \Kirby\Cms\ModelWithContent $model
      * @param string $type
      */
-    public function update(ModelWithContent $model, string $type = 'pages')
+    public function update(string $id, ModelWithContent $model, string $type = 'pages')
     {
         if ($this->isIndexable($model, $type) === false) {
             $this->delete($model);
@@ -47,7 +47,7 @@ trait hasActions
         }
 
         $object = $this->toEntry($model, $type);
-        $this->provider->update($object);
+        $this->provider->update($id, $object);
     }
 
     /**

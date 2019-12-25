@@ -32,6 +32,7 @@ return [
         'findAllMatches'     => true
     ],
     'sqlite' => [
-        'root' => dirname(__DIR__, 4) . '/logs/search.sqlite'
+        'root'  => dirname(__DIR__, 4) . '/logs/search.sqlite',
+        'fuzzy' => true
     ]
 ];

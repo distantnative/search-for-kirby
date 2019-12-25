@@ -17,10 +17,12 @@ use Kirby\Toolkit\Dir;
 class Sqlite extends Provider
 {
 
+    protected static $tokenize = '.,-@';
+
     /**
      * Constructor
      *
-     * @param \Kirby\Search\Search $search
+     * @param \Kirby\Search\Index $search
      */
     public function __construct(Index $index)
     {
@@ -48,17 +50,48 @@ class Sqlite extends Provider
     {
         // Get all field names for columns to be created
         $columns = $this->fields($data);
-        $columns[] = 'objectID UNINDEXED';
-        $columns[] = '_tags UNINDEXED';
+        $columns[] = 'id UNINDEXED';
+        $columns[] = '_type UNINDEXED';
 
         // Drop and create fresh virtual table
         Db::query('DROP TABLE IF EXISTS models');
-        Db::query('CREATE VIRTUAL TABLE models USING FTS5(' . implode(',', $columns) . ', tokenize = "porter unicode61");');
+        Db::query('CREATE VIRTUAL TABLE models USING FTS5(' . implode(',', $columns) . ', tokenize="unicode61 tokenchars \'' . static::$tokenize . '\'");');
 
         // Insert each object into the table
         foreach ($data as $entry) {
             $this->insert($entry);
         }
+    }
+
+    /**
+     * Creates value representing each state of the fields'
+     * string where you take away the first letter.
+     * Needed for contains, starts with lookup.
+     *
+     * @param array $data
+     *
+     * @return array
+     */
+    protected function fuzzify(array $data): array
+    {
+        // Don't fuzzify unsearchable fields
+        foreach ($data as $field => $value) {
+            if ($field === 'id' || $field === '_type') {
+                continue;
+            }
+
+            $data[$field] = $value;
+            $words  = str_word_count($value, 1, static::$tokenize);
+
+            foreach ($words as $word) {
+                while (strlen($word) > 0) {
+                    $word = substr($word, 1);
+                    $data[$field] .= ' ' . $word;
+                }
+            }
+        }
+
+        return $data;
     }
 
     /**
@@ -76,7 +109,7 @@ class Sqlite extends Provider
         $options = array_merge($this->options, $options);
 
         // Get results from database
-        $results = Db::query('SELECT * FROM models("' . $query. '*") ORDER BY rank;');
+        $results = Db::query('SELECT * FROM models(\'"' . $query. '"*\') ORDER BY rank;');
 
         // Turn into array
         if ($results !== false) {
@@ -95,20 +128,15 @@ class Sqlite extends Provider
 
     public function insert(array $object): void
     {
-        Db::insert('models', $object);
-    }
+        if ($this->options['fuzzy'] === true) {
+            $object = $this->fuzzify($object);
+        }
 
-    public function update(array $object): void
-    {
-        Db::update(
-            'models',
-            $object,
-            ['objectID' => $object['objectID']]
-        );
+        Db::insert('models', $object);
     }
 
     public function delete(string $id): void
     {
-        Db::delete('models', ['objectID' => $id]);
+        Db::delete('models', ['id' => $id]);
     }
 }

@@ -2,8 +2,6 @@
 
 namespace Kirby\Search;
 
-use Kirby\Toolkit\Query;
-
 /**
  * Index class
  *
@@ -22,7 +20,7 @@ class Index
     /**
      * Singleton class instance
      *
-     * @var \Kirby\Search\Search
+     * @var \Kirby\Search\Index
      */
     public static $instance;
 
@@ -86,7 +84,7 @@ class Index
 
             // If collection is defined in query notation
             if (is_string($collection) === true) {
-                $collection = (new Query($collection, [ 'site' => site(), 'kirby' => kirby()]))->result();
+                $collection = $this->toCollection($collection);
             }
 
             foreach ($collection as $model) {

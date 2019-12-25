@@ -30,7 +30,7 @@ class Algolia extends Provider
     /**
      * Constructor
      *
-     * @param \Kirby\Search\Search $search
+     * @param \Kirby\Search\Index $search
      */
     public function __construct(Index $index)
     {
@@ -58,13 +58,16 @@ class Algolia extends Provider
      * @param array $data
      * @return void
      */
-    public function replace(array $objects): void
+    public function replace(array $data): void
     {
         $this->store->setSettings([
-            'customRanking' => ['desc(_tags)']
+            'customRanking' => ['desc(_type)']
         ]);
 
-        $this->store->replaceAllObjects($objects);
+        $this->store->clearObjects();
+        $this->store->saveObjects($data, [
+            'objectIDKey' => 'id'
+        ]);
     }
 
     /**
@@ -94,7 +97,7 @@ class Algolia extends Provider
         }
 
         // Start the search
-        $results = $this->store->search($query, $options);
+        $results = $this->store->search($query, $options['options']);
 
         // Make sure only results from collection are kept
         $results = $this->filterByCollection($results, $collection);
@@ -111,12 +114,9 @@ class Algolia extends Provider
 
     public function insert(array $object): void
     {
-        $this->store->saveObject($object);
-    }
-
-    public function update(array $object): void
-    {
-        $this->store->saveObject($object);
+        $this->store->saveObject($object, [
+            'objectIDKey' => 'id'
+        ]);
     }
 
     public function delete(string $id): void
