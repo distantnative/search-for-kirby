@@ -17,7 +17,7 @@ use Kirby\Toolkit\Dir;
 class Sqlite extends Provider
 {
 
-    protected static $tokenize = '.,-@';
+    protected static $tokenize = '@';
 
     /**
      * Constructor
@@ -54,13 +54,20 @@ class Sqlite extends Provider
         $columns[] = '_type UNINDEXED';
 
         // Drop and create fresh virtual table
-        Db::query('DROP TABLE IF EXISTS models');
+        Db::query('DROP TABLE IF EXISTS models;');
         Db::query('CREATE VIRTUAL TABLE models USING FTS5(' . implode(',', $columns) . ', tokenize="unicode61 tokenchars \'' . static::$tokenize . '\'");');
 
         // Insert each object into the table
         foreach ($data as $entry) {
             $this->insert($entry);
         }
+
+        // IF I EVER FIND A WAY TO LOAD SPELLFIX1 extension
+        // Db::query('DROP TABLE IF EXISTS terms;');
+        // Db::query('CREATE VIRTUAL TABLE terms USING fts5vocab(models, "row");');
+        // Db::query('DROP TABLE IF EXISTS spellings;');
+        // Db::query('CREATE VIRTUAL TABLE spellings USING spellfix1;');
+        // Db::query('INSERT INTO spellings(word) SELECT term FROM terms WHERE col='*';');
     }
 
     /**
@@ -109,7 +116,14 @@ class Sqlite extends Provider
         $options = array_merge($this->options, $options);
 
         // Get results from database
-        $results = Db::query('SELECT * FROM models(\'"' . $query. '"*\') ORDER BY rank;');
+        $tokens =  str_word_count($query, 1, static::$tokenize);
+        if (count($tokens) > 1) {
+            $query = 'NEAR(' . implode('* ', $tokens) . '*)';
+        } else {
+            $query = '"' . $query. '"*';
+        }
+
+        $results = Db::query('SELECT * FROM models(\'' . $query . '\') ORDER BY rank;');
 
         // Turn into array
         if ($results !== false) {
