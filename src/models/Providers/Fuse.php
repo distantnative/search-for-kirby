@@ -4,6 +4,7 @@ namespace Kirby\Search\Providers;
 
 use Kirby\Search\Index;
 use Kirby\Search\Provider;
+use Kirby\Search\Results;
 
 use Fuse\Fuse as Client;
 
@@ -58,7 +59,16 @@ class Fuse extends Provider
             ['keys' => $keys]
         )))->search($query);
 
-        return $this->toResults($results, $options);
+        $page   = $options['page'];
+        $offset = ($options['page'] - 1) * $options['limit'];
+        $limit  = $options['limit'];
+
+        return new Results([
+            'hits'  => array_slice($results, $offset, $limit),
+            'page'  => $page,
+            'total' => count($results),
+            'limit' => $limit
+        ]);
     }
 
     /**

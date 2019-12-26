@@ -4,6 +4,7 @@ namespace Kirby\Search\Providers;
 
 use Kirby\Search\Index;
 use Kirby\Search\Provider;
+use Kirby\Search\Results;
 
 use Kirby\Database\Db;
 use Kirby\Toolkit\Dir;
@@ -138,7 +139,12 @@ class Sqlite extends Provider
         // Generate options with defaults
         $options = array_merge($this->options, $options);
 
-        // Get results from database
+        // Define pagination data
+        $page   = $options['page'];
+        $offset = ($options['page'] - 1) * $options['limit'];
+        $limit  = $options['limit'];
+
+        // Define SQL for search query
         $tokens =  str_word_count($query, 1, static::$tokenize);
         if (count($tokens) > 1) {
             $query = 'NEAR(' . implode('* ', $tokens) . '*)';
@@ -146,21 +152,30 @@ class Sqlite extends Provider
             $query = '"' . $query. '"*';
         }
 
-        $results = Db::query('SELECT * FROM models(\'' . $query . '\') ORDER BY rank;');
+        // Get mathes from database
+        $data = Db::query('SELECT * FROM models(\'' . $query . '\') ORDER BY rank;');
 
-        // Turn into array
-        if ($results !== false) {
-            $results = $results->toArray(function ($result) {
-                return $result->toArray();
-            });
-        } else {
-            $results = [];
+        // If no matches found
+        if ($data === false) {
+            return new Results([]);
         }
+
+        // Limit and offset data
+        // and turn to arrays
+        $results = $data->offset($offset)->limit($limit);
+        $results = $results->toArray(function ($result) {
+            return $result->toArray();
+        });
 
         // Make sure only results from collection are kept
         $results = $this->filterByCollection($results, $collection);
 
-        return $this->toResults($results, $options);
+        return new Results([
+            'hits'  => $results,
+            'page'  => $page,
+            'total' => $data->count(),
+            'limit' => $limit
+        ]);
     }
 
     public function insert(array $object): void

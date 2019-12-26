@@ -58,28 +58,6 @@ abstract class Provider
      */
     abstract public function search(string $query, array $options, $collection = null);
 
-    /**
-     * Turn results array to Results object with pagination
-     *
-     * @param array $results
-     * @param array $options
-     *
-     * @return \Kirby\Search\Results;
-     */
-    protected function toResults(array $results, array $options)
-    {
-        $page   = $options['page'];
-        $offset = ($options['page'] - 1) * $options['limit'];
-        $limit  = $options['limit'];
-
-        return new Results([
-            'hits'  => array_slice($results, $offset, $limit),
-            'page'  => $page,
-            'total' => count($results),
-            'limit' => $limit
-        ]);
-    }
-
     abstract public function replace(array $objects): void;
     abstract public function insert(array $object): void;
     abstract public function delete(string $id): void;
