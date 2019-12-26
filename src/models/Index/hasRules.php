@@ -25,7 +25,7 @@ trait hasRules
     public function isIndexable(ModelWithContent $model, string $type)
     {
         // Get model type specific options
-        $templates = $this->options['templates'][$type] ?? [];
+        $templates = $this->templates($type);
 
         // Check for the filter function
         if ($templates instanceof Closure) {

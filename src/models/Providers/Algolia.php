@@ -3,16 +3,17 @@
 namespace Kirby\Search\Providers;
 
 use Exception;
+
 use Kirby\Search\Index;
 use Kirby\Search\Provider;
 use Kirby\Search\Results;
 
-// Vendor dependencies
 use Algolia\AlgoliaSearch\SearchClient as Client;
 
 /**
  * Algolia provider
  *
+ * @author Lukas Bestle <lukas@getkirby.com>
  * @author Nico Hoffmann <nico@getkirby.com>
  * @license MIT
  * @link https://getkirby.com
@@ -34,7 +35,7 @@ class Algolia extends Provider
      */
     public function __construct(Index $index)
     {
-        $this->options = $index->options['algolia'] ?? [];
+        parent::__construct($index);
 
         if (isset(
             $this->options['app'],
@@ -50,6 +51,16 @@ class Algolia extends Provider
 
         // Initialize Algolia index
         $this->store = $this->algolia->initIndex($this->options['index'] ?? 'kirby');
+    }
+
+    /**
+     * Default options for Algolia provider
+     *
+     * @return array
+     */
+    protected function defaults(): array
+    {
+        return [];
     }
 
     /**

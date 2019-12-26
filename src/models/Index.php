@@ -14,6 +14,7 @@ class Index
 {
 
     use Index\hasActions;
+    use Index\hasOptions;
     use Index\hasRules;
     use Index\hasSchema;
 
@@ -40,10 +41,7 @@ class Index
 
     public function __construct()
     {
-        $this->options = array_merge(
-            require __DIR__ . '/../config/options.php',
-            option('search', [])
-        );
+        $this->options = option('search', []);
 
         $provider = $this->options['provider'] ?? 'fuse';
         $provider = 'Kirby\\Search\\Providers\\' . ucfirst($provider);
@@ -80,7 +78,7 @@ class Index
     {
         $data = [];
 
-        foreach ($this->options['collections'] as $type => $collection) {
+        foreach ($this->collections() as $type => $collection) {
 
             // If collection is defined in query notation
             if (is_string($collection) === true) {
@@ -115,7 +113,7 @@ class Index
 
         // Add default pagination
         $options['page']  = $options['page'] ?? 1;
-        $options['limit'] = $options['limit'] ?? $this->options['limit'];
+        $options['limit'] = $options['limit'] ?? $this->options['limit'] ?? 10;
 
         // Return a collection of the results
         return $this->provider->search($query, $options, $collection);

@@ -25,8 +25,8 @@ trait hasSchema
      */
     public function toEntry(ModelWithContent $model, $type): array
     {
-        $fields    = $this->options['fields'][$type];
-        $templates = $this->options['templates'][$type] ?? [];
+        $fields    = $this->fields($type);
+        $templates = $this->templates($type);
 
         // Type is excluded from index
         if ($fields === false) {
@@ -147,6 +147,7 @@ trait hasSchema
             'site' => site(),
             'kirby' => kirby()
         ]);
+
         return $query->result();
     }
 

@@ -4,6 +4,7 @@ namespace Kirby\Search\Providers;
 
 use Kirby\Search\Index;
 use Kirby\Search\Provider;
+
 use Kirby\Database\Db;
 use Kirby\Toolkit\Dir;
 
@@ -17,6 +18,12 @@ use Kirby\Toolkit\Dir;
 class Sqlite extends Provider
 {
 
+    /**
+     * Additional characters to be considered
+     * as part of tokens
+     *
+     * @var string
+     */
     protected static $tokenize = '@';
 
     /**
@@ -26,10 +33,13 @@ class Sqlite extends Provider
      */
     public function __construct(Index $index)
     {
-        $this->options = $index->options['sqlite'] ?? [];
+        parent::__construct($index);
 
-        if (file_exists(dirname($this->options['root'])) === false) {
-            Dir::make(dirname($this->options['root']));
+        // Create root directory
+        $dir = dirname($this->options['root']);
+
+        if (file_exists($dir) === false) {
+            Dir::make($dir);
         }
 
         // Connect to sqlite database
@@ -37,6 +47,19 @@ class Sqlite extends Provider
             'type'     => 'sqlite',
             'database' => $this->options['root']
         ]);
+    }
+
+    /**
+     * Default options for Sqlite provider
+     *
+     * @return array
+     */
+    protected function defaults(): array
+    {
+        return [
+            'root'  => dirname(__DIR__, 6) . '/media/search',
+            'fuzzy' => true
+        ];
     }
 
     /**

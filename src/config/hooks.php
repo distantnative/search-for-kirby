@@ -4,7 +4,7 @@ namespace Kirby\Search;
 function runHook() {
     $index = Index::instance();
 
-    if ($index->options['hooks'] === false) {
+    if (($index->options['hooks'] ?? true) === false) {
         return;
     }
 

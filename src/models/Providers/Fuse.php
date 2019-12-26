@@ -5,7 +5,6 @@ namespace Kirby\Search\Providers;
 use Kirby\Search\Index;
 use Kirby\Search\Provider;
 
-// Vendor dependencies
 use Fuse\Fuse as Client;
 
 /**
@@ -19,12 +18,18 @@ class Fuse extends Provider
 {
 
     /**
-     * Constructor
+     * Default options for Fuse provider
      *
-     * @param \Kirby\Search\Index $search
+     * @return array
      */
-    public function __construct(Index $index)    {
-        $this->options = $index->options['fuse'] ?? [];
+    protected function defaults(): array
+    {
+        return [
+            'minMatchCharLength' => 2,
+            'threshold'          => 0.4,
+            'distance'           => 60,
+            'findAllMatches'     => true
+        ];
     }
 
     /**
@@ -42,7 +47,7 @@ class Fuse extends Provider
         $options = array_merge($this->options, $options);
 
         // Get searchable data
-        $data = $this->data($collection, $options);
+        $data = $this->data($collection);
 
         // Get all fields and remove unsearchable fields
         $keys = $this->fields($data);
@@ -60,11 +65,10 @@ class Fuse extends Provider
      * Get data for search index
      *
      * @param \Kirby\Cms\Collection|null $collection
-     * @param array $options
      *
      * @return array
      */
-    protected function data($collection = null, array $options): array
+    protected function data($collection = null): array
     {
         $index = Index::instance();
 
@@ -76,11 +80,10 @@ class Fuse extends Provider
             return $collection->toArray(function ($model) use ($index, $type) {
                 return $index->toEntry($model, $type);
             });
+        }
 
         // Otherwise get full index data
-        } else {
-            return $index->data();
-        }
+         return $index->data();
     }
 
     /**
