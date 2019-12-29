@@ -12,20 +12,33 @@ namespace Kirby\Search\Index;
  */
 trait hasOptions
 {
-    protected function collections(): array
+
+    /**
+     * Returns merged array of index entries based on defaults
+     * and config option
+     *
+     * @return array
+     */
+    protected function entries(): array
     {
         $defaults = [
             'pages' => $pages = 'site.index.filterBy("isReadable", true)',
-            'files' => $pages . '.files',
+            'files' => $pages . '.files.filterBy("isReadable", true)',
             'users' => 'kirby.users'
         ];
 
         return array_merge(
             $defaults,
-            $this->options['collections'] ?? []
+            $this->options['entries'] ?? []
         );
     }
 
+    /**
+     * Returns merged array of fields based on defaults
+     * and config option
+     *
+     * @return array
+     */
     protected function fields(string $type = null)
     {
         $defaults = [
@@ -53,6 +66,12 @@ trait hasOptions
         return $fields[$type] ?? [];
     }
 
+    /**
+     * Returns merged array of templates based on defaults
+     * and config option
+     *
+     * @return array
+     */
     protected function templates(string $type = null)
     {
         $defaults = [
