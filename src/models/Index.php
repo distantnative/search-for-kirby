@@ -43,7 +43,7 @@ class Index
     {
         $this->options = option('search', []);
 
-        $provider = $this->options['provider'] ?? 'fuse';
+        $provider = $this->options['provider'] ?? 'sqlite';
         $provider = 'Kirby\\Search\\Providers\\' . ucfirst($provider);
         $this->provider = new $provider($this);
     }
