@@ -78,18 +78,18 @@ class Index
     {
         $data = [];
 
-        foreach ($this->entries() as $type => $entries) {
+        foreach ($this->entries() as $type => $collection) {
             // If collection is deactivated, skip
-            if ($entries === false) {
+            if ($collection === false) {
                 continue;
             }
 
             // If collection is defined in query notation
-            if (is_string($entries) === true) {
-                $entries = $this->toCollection($entries);
+            if (is_string($collection) === true) {
+                $collection = $this->toCollection($collection);
             }
 
-            foreach ($entries as $model) {
+            foreach ($collection as $model) {
                 if ($this->isIndexable($model, $type) === true) {
                     $data[] = $this->toEntry($model, $type);
                 }

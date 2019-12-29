@@ -22,8 +22,8 @@ trait hasOptions
     protected function entries(): array
     {
         $defaults = [
-            'pages' => $pages = 'site.index.filterBy("isReadable", true)',
-            'files' => $pages . '.files.filterBy("isReadable", true)',
+            'pages' => $pages = 'site.index',
+            'files' => $pages . '.files',
             'users' => 'kirby.users'
         ];
 
