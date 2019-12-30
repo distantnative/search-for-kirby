@@ -7,4 +7,8 @@
 [![License](https://img.shields.io/badge/license-MIT-7ea328.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 [![Donate](https://img.shields.io/badge/support-donate-c82829.svg?style=for-the-badge)](https://paypal.me/distantnative/15EUR)
 
+**Global at its core**  
+No need to limit your search. Simply search across all your pages, files and users.  
+And still get faster results.
+
 **Learn more [about the plugin](https://distantnative.com/search) and read the [documentation](https://distantnative.com/search/docs).**
