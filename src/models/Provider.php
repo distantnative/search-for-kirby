@@ -75,7 +75,7 @@ abstract class Provider
      */
     protected function fields(array $data): array
     {
-        $fields = call_user_func_array('array_merge', $data);
+        $fields = array_merge(...$data);
 
         // Remove unsearchable fields
         unset($fields['id'], $fields['_type']);

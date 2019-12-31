@@ -1,7 +1,9 @@
 <?php
+
 namespace Kirby\Search;
 
-function runHook() {
+function runHook()
+{
     $index = Index::instance();
 
     if (($index->options['hooks'] ?? true) === false) {
@@ -11,7 +13,7 @@ function runHook() {
     $args = func_get_args();
     $action = $args[0];
     $parameters = array_slice($args, 1);
-    call_user_func_array([$index, $action], $parameters);
+    $index->$action(...$parameters);
 }
 
 return [
