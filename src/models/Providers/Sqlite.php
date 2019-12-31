@@ -6,7 +6,7 @@ use Kirby\Search\Index;
 use Kirby\Search\Provider;
 use Kirby\Search\Results;
 
-use Kirby\Database\Db;
+use Kirby\Database\Database;
 use Kirby\Toolkit\Dir;
 
 /**
@@ -44,7 +44,7 @@ class Sqlite extends Provider
         }
 
         // Connect to sqlite database
-        Db::connect([
+        $this->store = new Database([
             'type'     => 'sqlite',
             'database' => $this->options['root']
         ]);
@@ -78,26 +78,21 @@ class Sqlite extends Provider
         $columns[] = '_type UNINDEXED';
 
         // Drop and create fresh virtual table
-        Db::query('DROP TABLE IF EXISTS models;');
-        Db::query('CREATE VIRTUAL TABLE models USING FTS5(' . implode(',', $columns) . ', tokenize="unicode61 tokenchars \'' . static::$tokenize . '\'");');
+        $this->store->execute('DROP TABLE IF EXISTS models');
+        $this->store->execute(
+            'CREATE VIRTUAL TABLE models USING FTS5(' . $this->store->escape(implode(',', $columns)) . ', tokenize="unicode61 tokenchars \'' . $this->store->escape(static::$tokenize) . '\'");'
+        );
 
         // Insert each object into the table
         foreach ($data as $entry) {
             $this->insert($entry);
         }
-
-        // IF I EVER FIND A WAY TO LOAD SPELLFIX1 extension
-        // Db::query('DROP TABLE IF EXISTS terms;');
-        // Db::query('CREATE VIRTUAL TABLE terms USING fts5vocab(models, "row");');
-        // Db::query('DROP TABLE IF EXISTS spellings;');
-        // Db::query('CREATE VIRTUAL TABLE spellings USING spellfix1;');
-        // Db::query('INSERT INTO spellings(word) SELECT term FROM terms WHERE col='*';');
     }
 
     /**
      * Creates value representing each state of the fields'
      * string where you take away the first letter.
-     * Needed for contains, starts with lookup.
+     * Needed for lookups in the middle or end of text.
      *
      * @param array $data
      *
@@ -111,11 +106,17 @@ class Sqlite extends Provider
                 continue;
             }
 
+            // Add original string to the beginning
             $data[$field] = $value;
+
+            // Split into words/tokens
             $words  = str_word_count($value, 1, static::$tokenize);
 
+            // Foreach token
             foreach ($words as $word) {
                 while (strlen($word) > 0) {
+                    // Remove first character and add to value,
+                    // then repeat until the end of the word
                     $word = substr($word, 1);
                     $data[$field] .= ' ' . $word;
                 }
@@ -145,30 +146,32 @@ class Sqlite extends Provider
         $limit  = $options['limit'];
 
         // Define SQL for search query
-        $tokens =  str_word_count($query, 1, static::$tokenize);
+        $tokens = str_word_count($query, 1, static::$tokenize);
         if (count($tokens) > 1) {
-            $query = 'NEAR(' . implode('* ', $tokens) . '*)';
+            $tokens = $this->store->escape(implode('* ', $tokens) . '*');
+            $query = 'NEAR(' . $tokens . ')';
         } else {
-            $query = '"' . $query. '"*';
+            $tokens = $this->store->escape($query);
+            $query = '"' . $tokens . '"*';
         }
 
-        // Get mathes from database
-        $data = Db::query('SELECT * FROM models(\'' . $query . '\') ORDER BY rank;');
+        // Get matches from database
+        // with limit and offset
+        $data = $this->store->models()
+            ->select('id, _type')
+            ->where('models MATCH \'' . $query . '\'')
+            ->order('rank')
+            ->offset($offset)
+            ->limit($limit)
+            ->fetch('array')->all();
 
         // If no matches found
         if ($data === false) {
             return new Results([]);
         }
 
-        // Limit and offset data
-        // and turn to arrays
-        $results = $data->offset($offset)->limit($limit);
-        $results = $results->toArray(function ($result) {
-            return $result->toArray();
-        });
-
         // Make sure only results from collection are kept
-        $results = $this->filterByCollection($results, $collection);
+        $results = $this->filterByCollection($data->toArray(), $collection);
 
         return new Results([
             'hits'  => $results,
@@ -184,11 +187,11 @@ class Sqlite extends Provider
             $object = $this->fuzzify($object);
         }
 
-        Db::insert('models', $object);
+        $this->store->models()->insert($object);
     }
 
     public function delete(string $id): void
     {
-        Db::delete('models', ['id' => $id]);
+        $this->store->models()->delete(['id' => $id]);
     }
 }
