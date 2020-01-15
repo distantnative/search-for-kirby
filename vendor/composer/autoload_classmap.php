@@ -73,6 +73,7 @@ return array(
     'Kirby\\ComposerInstaller\\PluginInstaller' => $vendorDir . '/getkirby/composer-installer/src/ComposerInstaller/PluginInstaller.php',
     'Kirby\\Search\\Index' => $baseDir . '/src/models/Index.php',
     'Kirby\\Search\\Index\\hasActions' => $baseDir . '/src/models/Index/hasActions.php',
+    'Kirby\\Search\\Index\\hasOptions' => $baseDir . '/src/models/Index/hasOptions.php',
     'Kirby\\Search\\Index\\hasRules' => $baseDir . '/src/models/Index/hasRules.php',
     'Kirby\\Search\\Index\\hasSchema' => $baseDir . '/src/models/Index/hasSchema.php',
     'Kirby\\Search\\Provider' => $baseDir . '/src/models/Provider.php',

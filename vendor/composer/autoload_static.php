@@ -139,6 +139,7 @@ class ComposerStaticInit8466cd401734fc5b7f8b413ae5a110bd
         'Kirby\\ComposerInstaller\\PluginInstaller' => __DIR__ . '/..' . '/getkirby/composer-installer/src/ComposerInstaller/PluginInstaller.php',
         'Kirby\\Search\\Index' => __DIR__ . '/../..' . '/src/models/Index.php',
         'Kirby\\Search\\Index\\hasActions' => __DIR__ . '/../..' . '/src/models/Index/hasActions.php',
+        'Kirby\\Search\\Index\\hasOptions' => __DIR__ . '/../..' . '/src/models/Index/hasOptions.php',
         'Kirby\\Search\\Index\\hasRules' => __DIR__ . '/../..' . '/src/models/Index/hasRules.php',
         'Kirby\\Search\\Index\\hasSchema' => __DIR__ . '/../..' . '/src/models/Index/hasSchema.php',
         'Kirby\\Search\\Provider' => __DIR__ . '/../..' . '/src/models/Provider.php',

@@ -1,4 +1,10 @@
 {
+  "name": "retour-for-kirby",
+  "version": "1.0.0-alpha.2",
+  "description": "Really find what you are looking for.",
+  "main": "index.js",
+  "author": "Nico Hoffmann <on-github@nhoffmann.com>",
+  "license": "MIT",
   "scripts": {
     "dev": "parcel watch src/index.js --no-source-maps -d ./",
     "build": "parcel build src/index.js --no-source-maps --experimental-scope-hoisting -d ./"

@@ -31,13 +31,7 @@ abstract class Provider
      */
     public function __construct(Index $index)
     {
-        // Merge options with defaults
-        $provider = lcfirst(get_class());
-
-        $this->options = array_merge(
-            $this->defaults(),
-            $index->options[$provider] ?? []
-        );
+        $this->setOptions($index);
     }
 
     /**
@@ -46,6 +40,24 @@ abstract class Provider
      * @return array
      */
     abstract protected function defaults(): array;
+
+    /**
+     * Set options based on config and defaults
+     *
+     * @param Index $index
+     * @return void
+     */
+    protected function setOptions(Index $index): void
+    {
+        // Merge options with defaults
+        $class = str_replace('Kirby\\Search\\Providers\\', '', get_class($this));
+        $provider = lcfirst($class);
+
+        $this->options = array_merge(
+            $this->defaults(),
+            $index->options[$provider] ?? []
+        );
+    }
 
     /**
      * Search index for query hits

@@ -1,8 +1,15 @@
 {
     "name": "distantnative/search-for-kirby",
-    "description": "Search for Kirby",
+    "description": "Really find what you are looking for.",
     "type": "kirby-plugin",
+    "version": "1.0.0-alpha.2",
     "license": "MIT",
+    "keywords": [
+        "kirby3",
+        "kirby3-cms",
+        "kirby3-plugin",
+        "search"
+    ],
     "authors": [
         {
             "name": "Lukas Bestle",

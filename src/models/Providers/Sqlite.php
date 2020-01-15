@@ -34,10 +34,10 @@ class Sqlite extends Provider
      */
     public function __construct(Index $index)
     {
-        parent::__construct($index);
+        $this->setOptions($index);
 
         // Create root directory
-        $dir = dirname($this->options['root']);
+        $dir = dirname($this->options['file']);
 
         if (file_exists($dir) === false) {
             Dir::make($dir);
@@ -46,7 +46,7 @@ class Sqlite extends Provider
         // Connect to sqlite database
         $this->store = new Database([
             'type'     => 'sqlite',
-            'database' => $this->options['root']
+            'database' => $this->options['file']
         ]);
     }
 
