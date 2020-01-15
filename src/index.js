@@ -2,7 +2,7 @@ import Section from "./components/Section.vue";
 import Modal from "./components/Modal.vue";
 import View from "./components/View.vue";
 
-panel.plugin("getkirby/search", {
+panel.plugin("distantnative/search-for-kirby", {
   sections: {
     search: Section
   },

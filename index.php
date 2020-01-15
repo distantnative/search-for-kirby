@@ -6,7 +6,7 @@ use Kirby\Search\Index;
 
 include __DIR__ . '/vendor/autoload.php';
 
-App::plugin('getkirby/search', [
+App::plugin('distantnative/search-for-kirby', [
     'api'   => require 'src/config/api.php',
     'hooks' => require 'src/config/hooks.php',
     'translations' => [
