@@ -14,7 +14,13 @@ App::plugin('distantnative/search-for-kirby', [
         'de' => require 'src/config/i18n/de.php'
     ],
     'sections' => [
-        'search' => []
+        'search' => [
+            'props' => [
+                'headline' => function ($headline = 'Search') {
+                    return $headline;
+                }
+            ]
+        ]
     ],
     'components' => [
         'search' => function (App $kirby, Collection $collection, string $query = null, $params = []) {
