@@ -90,43 +90,6 @@ class Sqlite extends Provider
     }
 
     /**
-     * Creates value representing each state of the fields'
-     * string where you take away the first letter.
-     * Needed for lookups in the middle or end of text.
-     *
-     * @param array $data
-     *
-     * @return array
-     */
-    protected function fuzzify(array $data): array
-    {
-        // Don't fuzzify unsearchable fields
-        foreach ($data as $field => $value) {
-            if ($field === 'id' || $field === '_type') {
-                continue;
-            }
-
-            // Add original string to the beginning
-            $data[$field] = $value;
-
-            // Split into words/tokens
-            $words  = str_word_count($value, 1, static::$tokenize);
-
-            // Foreach token
-            foreach ($words as $word) {
-                while (strlen($word) > 0) {
-                    // Remove first character and add to value,
-                    // then repeat until the end of the word
-                    $word = substr($word, 1);
-                    $data[$field] .= ' ' . $word;
-                }
-            }
-        }
-
-        return $data;
-    }
-
-    /**
      * Run search query against database index
      *
      * @param string $query
@@ -183,7 +146,7 @@ class Sqlite extends Provider
 
     public function insert(array $object): void
     {
-        if ($this->options['fuzzy'] === true) {
+        if ($this->options['fuzzy'] !== false) {
             $object = $this->fuzzify($object);
         }
 
@@ -193,5 +156,50 @@ class Sqlite extends Provider
     public function delete(string $id): void
     {
         $this->store->models()->delete(['id' => $id]);
+    }
+
+    /**
+     * Creates value representing each state of the fields'
+     * string where you take away the first letter.
+     * Needed for lookups in the middle or end of text.
+     *
+     * @param array $data
+     *
+     * @return array
+     */
+    protected function fuzzify(array $data): array
+    {
+        foreach ($data as $field => $value) {
+            // Don't fuzzify unsearchable fields
+            if ($field === 'id' || $field === '_type') {
+                continue;
+            }
+
+            // Make sure to only fuzzify fields according to config
+            if (
+                $this->options['fuzzy'] !== true &&
+                in_array($field, $this->options['fuzzy'][$data['_type']] ?? []) === false
+            ) {
+                continue;
+            }
+
+            // Add original string to the beginning
+            $data[$field] = $value;
+
+            // Split into words/tokens
+            $words = str_word_count($value, 1, static::$tokenize);
+
+            // Foreach token
+            foreach ($words as $word) {
+                while (strlen($word) > 0) {
+                    // Remove first character and add to value,
+                    // then repeat until the end of the word
+                    $word = substr($word, 1);
+                    $data[$field] .= ' ' . $word;
+                }
+            }
+        }
+
+        return $data;
     }
 }
