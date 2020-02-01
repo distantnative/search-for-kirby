@@ -4,7 +4,7 @@ use Kirby\Cms\App;
 use Kirby\Cms\Collection;
 use Kirby\Search\Index;
 
-include __DIR__ . '/vendor/autoload.php';
+@include_once __DIR__ . '/vendor/autoload.php';
 
 App::plugin('distantnative/search-for-kirby', [
     'api'   => require 'src/config/api.php',
