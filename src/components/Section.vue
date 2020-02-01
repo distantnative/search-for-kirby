@@ -3,8 +3,8 @@
     <div class="k-section-header">
       <k-headline>{{ headline }}</k-headline>
     </div>
-    <k-button icon="wand" @click="build">
-      Re-build index
+    <k-button icon="refresh" @click="build">
+      {{ $t("search.build") }}
     </k-button>
   </div>
 </template>
@@ -23,7 +23,11 @@ export default {
   },
   methods: {
     build() {
-      this.$api.post("search");
+      this.$api.post("search").then(() => {
+        this.$store.dispatch("notification/success", this.$t("search.built"));
+      }).catch(e => {
+        console.error(e);
+      });
     }
   }
 }
