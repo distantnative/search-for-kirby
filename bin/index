@@ -12,7 +12,7 @@
 if (php_sapi_name() !== 'cli') die();
 
 // load Kirby
-require dirname(__DIR__, 3) . '/kirby/bootstrap.php';
+require dirname(__DIR__, 4) . '/kirby/bootstrap.php';
 $kirby = new Kirby();
 
 // initialize Kirby and site
@@ -23,9 +23,7 @@ try {
   echo "\033[1mReindexing using the Search plugin...\033[0m\n";
   (new Kirby\Search\Index)->build();
 } catch (Exception $e) {
-  echo $e;
-
-  // echo "\033[1;31mError: \033[0;31m" . $e->getMessage() . "\033[0m\n";
+  echo "\033[1;31mError: \033[0;31m" . $e->getMessage() . "\033[0m\n";
   exit(1);
 }
 
