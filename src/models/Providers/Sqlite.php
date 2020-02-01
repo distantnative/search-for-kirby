@@ -122,7 +122,22 @@ class Sqlite extends Provider
         // with limit and offset
         $data = $this->store->models()
             ->select('id, _type')
-            ->where('models MATCH \'' . $query . '\'')
+            ->where('models MATCH \'' . $query . '\'');
+
+        // Custom weights for ranking
+        if ($this->options['weights'] ?? false) {
+            // Get all columns from table
+            $columns = $this->store->query('PRAGMA table_info(models);')->toArray();
+            // Match columns to custom weights
+            $weights = array_map(function ($column) {
+                return $this->options['weights'][$column->name()] ?? 1;
+            }, $columns);
+            // Add Sqlite clause to weigh ranking
+            $data = $data->andWhere('rank MATCH \'bm25(' . implode(', ', $weights) . ')\'');
+        }
+
+        // Fetch all data as array
+        $data = $data
             ->order('rank')
             ->offset($offset)
             ->limit($limit)
