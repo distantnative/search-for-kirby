@@ -58,8 +58,14 @@ class Sqlite extends Provider
     protected function defaults(): array
     {
         return [
-            'file'  => dirname(__DIR__, 6) . '/media/search.sqlite',
-            'fuzzy' => true
+            'file'    => dirname(__DIR__, 6) . '/media/search.sqlite',
+            'fuzzy'   => true,
+            'weights' => [
+                'title'    => 5,
+                'filename' => 5,
+                'email'    => 5,
+                'name'     => 5
+            ]
         ];
     }
 
@@ -119,24 +125,28 @@ class Sqlite extends Provider
         }
 
         // Get matches from database
-        // with limit and offset
         $data = $this->store->models()
             ->select('id, _type')
             ->where('models MATCH \'' . $query . '\'');
 
         // Custom weights for ranking
-        if ($this->options['weights'] ?? false) {
+        if (is_array($this->options['weights']) === true) {
+
             // Get all columns from table
             $columns = $this->store->query('PRAGMA table_info(models);')->toArray();
+
             // Match columns to custom weights
             $weights = array_map(function ($column) {
                 return $this->options['weights'][$column->name()] ?? 1;
             }, $columns);
+
             // Add Sqlite clause to weigh ranking
-            $data = $data->andWhere('rank MATCH \'bm25(' . implode(', ', $weights) . ')\'');
+            $weights = implode(', ', $weights);
+            $data    = $data->andWhere('rank MATCH \'bm25(' . $weights . ')\'');
         }
 
         // Fetch all data as array
+        // with limit and offset
         $data = $data
             ->order('rank')
             ->offset($offset)
