@@ -95,20 +95,20 @@ class Algolia extends Provider
         // Generate options with defaults
         $options = array_merge($this->options, $options);
 
-        // Set the page parameter: Algolia uses zero based page
-        // indexes while Kirby's pagination starts at 1
-        $options['page'] = $options['page'] - 1;
-
-        // Map the plugin option to algolia option
-        $options['hitsPerPage'] = $options['limit'];
-
         // Filter by collection type
-        if ($filters = Index::toCollectionType($collection)) {
-            $options['filters'] = $filters;
+        if ($type = Index::toCollectionType($collection)) {
+            $options['options']['filters'] = '_type:' . $type;
         }
 
         // Start the search
-        $results = $this->store->search($query, $options['options']);
+        $results = $this->store->search($query, array_merge([
+            // Set the page parameter: Algolia uses zero based page
+            // indexes while Kirby's pagination starts at 1
+            'page' => $options['page'] - 1,
+
+            // Map the plugin option to algolia option
+            'hitsPerPage' => $options['limit']
+        ], $options['options']));
 
         // Make sure only results from collection are kept
         $results = $this->filterByCollection($results, $collection);
