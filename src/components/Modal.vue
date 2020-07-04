@@ -28,7 +28,7 @@
           :data-selected="selected === itemIndex"
           @mouseover="selected = itemIndex"
         >
-          <k-link :to="item.link" @click="click(itemIndex)">
+          <k-link :to="item.link" @click="close">
             <k-image v-if="thumb(item.image)" v-bind="thumb(item.image)" />
             <k-icon v-else v-bind="item.icon" />
             <div>
@@ -38,11 +38,6 @@
           </k-link>
         </li>
       </ul>
-      <div v-if="pagination.total > items.length" class="k-search-more">
-        <k-button @click="onAll">
-          {{ $t("search.all") }}
-        </k-button>
-      </div>
     </div>
   </div>
 </template>
@@ -53,21 +48,10 @@ import thumb from "./../mixins/thumb";
 export default {
   extends: "k-search",
   mixins: [thumb],
-  data() {
-    return {
-      items: [],
-      q: null,
-      selected: -1,
-      pagination: {
-        page: 1
-      }
-    }
-  },
   methods: {
     search(query) {
       this.$api.get("search", {
         q: query,
-        page: this.pagination.page,
         select: [
           "id",
           "title",
@@ -100,17 +84,12 @@ export default {
 
           return item;
         });
-        this.pagination = response.pagination;
         this.selected = -1;
       }).catch((e) => {
-        console.log(e)
+        console.error(e);
         this.items = [];
         this.selected = -1;
       });
-    },
-    onAll() {
-      this.$router.push({ path: "/plugins/search", query: { q: this.q }})
-      this.$store.dispatch("search", false);
     }
   }
 };
@@ -130,12 +109,5 @@ export default {
   width: 32px;
   height: 32px;
   object-fit: cover;
-}
-.k-search-more {
-  background: var(--color-text);
-  color: #fff;
-  display: flex;
-  justify-content: center;
-  padding: .75rem;
 }
 </style>
