@@ -125,9 +125,14 @@ class Sqlite extends Provider
         }
 
         // Get matches from database
-        $data = $this->store->models()
-            ->select('id, _type')
-            ->where('models MATCH \'' . $query . '\'');
+        try {
+            $data = $this->store->models()
+                ->select('id, _type')
+                ->where('models MATCH \'' . $query . '\'');
+        } catch (\Exception $error) {
+            return new Results([]);
+        }
+
 
         // Custom weights for ranking
         if (is_array($this->options['weights']) === true) {
