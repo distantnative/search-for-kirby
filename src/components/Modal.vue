@@ -6,7 +6,7 @@
           ref="input"
           v-model="q"
           :placeholder="$t('search') + ' …'"
-          aria-label="$t('search')"
+          :aria-label="$t('search')"
           type="text"
           @keydown.down.prevent="down"
           @keydown.up.prevent="up"
