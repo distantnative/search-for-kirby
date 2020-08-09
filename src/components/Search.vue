@@ -50,7 +50,6 @@ export default {
   mixins: [thumb],
   methods: {
     async search(query) {
-
       try {
         const response = await this.$api.get("search", {
           q: query,
