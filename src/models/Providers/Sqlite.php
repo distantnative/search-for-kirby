@@ -58,7 +58,7 @@ class Sqlite extends Provider
     protected function defaults(): array
     {
         return [
-            'file'    => dirname(__DIR__, 6) . '/media/search.sqlite',
+            'file'    => dirname(__DIR__, 5) . '/logs/search.sqlite',
             'fuzzy'   => true,
             'weights' => [
                 'title'    => 5,
