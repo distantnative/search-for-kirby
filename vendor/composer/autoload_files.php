@@ -14,5 +14,6 @@ return array(
     'd28900056f66e13fa4e269caa8a4cd1c' => $vendorDir . '/loilo/fuse/src/Bitap/score.php',
     '7679d68ce06dec48d343f560108145d2' => $vendorDir . '/loilo/fuse/src/Bitap/search.php',
     'ae18f0d7f1399203de0fc444e860fdd9' => $vendorDir . '/loilo/fuse/src/Helpers/deep_value.php',
+    'ea2171ac7e455f713fa8445ea3919da7' => $vendorDir . '/loilo/fuse/src/Helpers/get.php',
     '59ff57762b50378bb54688b7561c609b' => $vendorDir . '/loilo/fuse/src/Helpers/is_list.php',
 );

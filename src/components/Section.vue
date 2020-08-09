@@ -16,18 +16,19 @@ export default {
       headline: ""
     }
   },
-  created() {
-    this.load().then(response => {
-      this.headline = response.headline;
-    });
+  async created() {
+    const response = await this.load();
+    this.headline = response.headline;
   },
   methods: {
-    build() {
-      this.$api.post("search").then(() => {
+    async build() {
+      try {
+        await this.$api.post("search");
         this.$store.dispatch("notification/success", this.$t("search.built"));
-      }).catch(e => {
+
+      } catch (error) {
         console.error(e);
-      });
+      }
     }
   }
 }

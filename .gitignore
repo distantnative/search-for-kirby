@@ -28,4 +28,8 @@
 /vendor/**/php4/*
 /vendor/getkirby/composer-installer
 
-/store
+# editors
+ *.sublime-project
+ *.sublime-workspace
+ /.vscode
+ /.idea
