@@ -2,7 +2,6 @@
     "name": "distantnative/search-for-kirby",
     "description": "Really find what you are looking for.",
     "type": "kirby-plugin",
-    "version": "1.0.0-alpha.2",
     "license": "MIT",
     "keywords": [
         "kirby3",

@@ -186,7 +186,7 @@ class SearchIndex
             $message .= "If your batch has a unique identifier but isn't called objectID,\n";
             $message .= "you can map it automatically using `saveObjects(\$objects, ['objectIDKey' => 'primary'])`\n\n";
             $message .= "Algolia is also able to generate objectIDs automatically but *it's not recommended*.\n";
-            $message .= "To do it, use `saveObjects(\$objects, ['autoGenerateObjectIDIfNotExist' => true])`\n\n";
+            $message .= "To do it, use `['autoGenerateObjectIDIfNotExist' => true] on the request options parameter`\n\n";
 
             throw new MissingObjectId($message);
         }
@@ -512,6 +512,18 @@ class SearchIndex
         }
 
         Helpers::ensureObjectID($rules, 'All rules must have an unique objectID to be valid');
+
+        /*
+         * If consequence `params` is an array without keys, we are going to remove it
+         * from the payload of the rule. Otherwise the transporter layer will serialize
+         * `params` to an empty array [] instead of an empty object {} making an invalid
+         * rule on the engine side.
+         */
+        foreach ($rules as $key => $rule) {
+            if (isset($rule['consequence']) && empty($rule['consequence']['params'])) {
+                unset($rules[$key]['consequence']['params']);
+            }
+        }
 
         $response = $this->api->write(
             'POST',

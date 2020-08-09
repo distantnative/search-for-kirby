@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "algolia/algoliasearch-client-php",
-            "version": "2.5.0",
+            "version": "2.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/algolia/algoliasearch-client-php.git",
-                "reference": "446c9faedcb6534f2295b93835b606267ff5f816"
+                "reference": "ce8b35a5aa842ad3e0dc05bbd7aaf5ed82481d71"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/algolia/algoliasearch-client-php/zipball/446c9faedcb6534f2295b93835b606267ff5f816",
-                "reference": "446c9faedcb6534f2295b93835b606267ff5f816",
+                "url": "https://api.github.com/repos/algolia/algoliasearch-client-php/zipball/ce8b35a5aa842ad3e0dc05bbd7aaf5ed82481d71",
+                "reference": "ce8b35a5aa842ad3e0dc05bbd7aaf5ed82481d71",
                 "shasum": ""
             },
             "require": {
@@ -74,7 +74,7 @@
                 "php",
                 "search"
             ],
-            "time": "2019-11-05T12:40:49+00:00"
+            "time": "2020-06-25T08:47:13+00:00"
         },
         {
             "name": "getkirby/composer-installer",
@@ -116,16 +116,16 @@
         },
         {
             "name": "loilo/fuse",
-            "version": "3.4.6",
+            "version": "3.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/loilo/Fuse.git",
-                "reference": "ed0ab1cec69cc30e20111c7eeef6d4614ad82bb9"
+                "reference": "ead0f50addaee3d9bbed3aae1f0b8ed22b0f573f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/loilo/Fuse/zipball/ed0ab1cec69cc30e20111c7eeef6d4614ad82bb9",
-                "reference": "ed0ab1cec69cc30e20111c7eeef6d4614ad82bb9",
+                "url": "https://api.github.com/repos/loilo/Fuse/zipball/ead0f50addaee3d9bbed3aae1f0b8ed22b0f573f",
+                "reference": "ead0f50addaee3d9bbed3aae1f0b8ed22b0f573f",
                 "shasum": ""
             },
             "require": {
@@ -146,6 +146,7 @@
                     "src/Bitap/score.php",
                     "src/Bitap/search.php",
                     "src/Helpers/deep_value.php",
+                    "src/Helpers/get.php",
                     "src/Helpers/is_list.php"
                 ]
             },
@@ -160,7 +161,7 @@
                 }
             ],
             "description": "Fuzzy search for PHP based on Bitap algorithm",
-            "time": "2019-11-21T11:23:02+00:00"
+            "time": "2020-03-10T10:18:12+00:00"
         },
         {
             "name": "psr/http-message",
@@ -214,16 +215,16 @@
         },
         {
             "name": "psr/log",
-            "version": "1.1.2",
+            "version": "1.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/log.git",
-                "reference": "446d54b4cb6bf489fc9d75f55843658e6f25d801"
+                "reference": "0f73288fd15629204f9d42b7055f72dacbe811fc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/log/zipball/446d54b4cb6bf489fc9d75f55843658e6f25d801",
-                "reference": "446d54b4cb6bf489fc9d75f55843658e6f25d801",
+                "url": "https://api.github.com/repos/php-fig/log/zipball/0f73288fd15629204f9d42b7055f72dacbe811fc",
+                "reference": "0f73288fd15629204f9d42b7055f72dacbe811fc",
                 "shasum": ""
             },
             "require": {
@@ -257,7 +258,7 @@
                 "psr",
                 "psr-3"
             ],
-            "time": "2019-11-01T11:05:21+00:00"
+            "time": "2020-03-23T09:12:05+00:00"
         },
         {
             "name": "psr/simple-cache",
@@ -315,5 +316,6 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "1.1.0"
 }

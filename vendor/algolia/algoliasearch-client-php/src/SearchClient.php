@@ -249,11 +249,19 @@ class SearchClient
         return base64_encode($content);
     }
 
+    /**
+     * @deprecated endpoint will be deprecated
+     * @see RecommendationClient
+     */
     public function getPersonalizationStrategy($requestOptions = array())
     {
         return $this->api->read('GET', api_path('/1/recommendation/personalization/strategy'), $requestOptions);
     }
 
+    /**
+     * @deprecated endpoint will be deprecated
+     * @see RecommendationClient
+     */
     public function setPersonalizationStrategy($strategy, $requestOptions = array())
     {
         $apiResponse = $this->api->write(
@@ -294,9 +302,24 @@ class SearchClient
         return $this->api->read('GET', api_path('/1/clusters/mapping/%s', $userId), $requestOptions);
     }
 
+    /**
+     * @deprecated since 2.6.1, use getTopUserIds instead.
+     */
     public function getTopUserId($requestOptions = array())
     {
-        return $this->api->read('GET', api_path('/1/clusters/mapping/%top'), $requestOptions);
+        return $this->getTopUserIds($requestOptions);
+    }
+
+    /**
+     * Get the top 10 userIDs with the highest number of records per cluster.
+     *
+     * @param array $requestOptions
+     *
+     * @return array<string, mixed>
+     */
+    public function getTopUserIds($requestOptions = array())
+    {
+        return $this->api->read('GET', api_path('/1/clusters/mapping/top'), $requestOptions);
     }
 
     public function assignUserId($userId, $clusterName, $requestOptions = array())
@@ -315,6 +338,28 @@ class SearchClient
             ),
             $requestOptions
         );
+    }
+
+    /**
+     * Assign multiple userIds to the given cluster name.
+     *
+     * @param array<int, int> $userIds
+     * @param string          $clusterName
+     * @param array           $requestOptions
+     *
+     * @return array<string, mixed>
+     */
+    public function assignUserIds($userIds, $clusterName, $requestOptions = array())
+    {
+        return $this->api->write(
+             'POST',
+             api_path('/1/clusters/mapping/batch'),
+             array(
+                 'users' => $userIds,
+                 'cluster' => $clusterName,
+             ),
+             $requestOptions
+         );
     }
 
     public function removeUserId($userId, $requestOptions = array())
@@ -379,5 +424,30 @@ class SearchClient
         $validUntil = (int) $matches[1];
 
         return $validUntil - time();
+    }
+
+    /**
+     * Get cluster pending (migrating, creating, deleting) mapping state. Query cluster pending mapping status and get cluster mappings.
+     *
+     * @param array<string, mixed> $requestOptions
+     *
+     * @return array<string, boolean|array>
+     */
+    public function hasPendingMappings($requestOptions = array())
+    {
+        if (isset($requestOptions['retrieveMappings'])
+            && true === $requestOptions['retrieveMappings']) {
+            if (is_array($requestOptions)) {
+                $requestOptions['getClusters'] = true;
+            } elseif ($requestOptions instanceof RequestOptions) {
+                $requestOptions->addQueryParameter('getClusters', true);
+            }
+        }
+
+        return $this->api->read(
+            'GET',
+            api_path('/1/clusters/mapping/pending'),
+            $requestOptions
+        );
     }
 }
