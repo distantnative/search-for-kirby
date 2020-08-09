@@ -49,21 +49,24 @@ export default {
   extends: "k-search",
   mixins: [thumb],
   methods: {
-    search(query) {
-      this.$api.get("search", {
-        q: query,
-        select: [
-          "id",
-          "title",
-          "email",
-          "name",
-          "filename",
-          "link",
-          "avatar",
-          "panelIcon",
-          "panelImage"
-        ]
-      }).then(response => {
+    async search(query) {
+
+      try {
+        const response = await this.$api.get("search", {
+          q: query,
+          select: [
+            "id",
+            "title",
+            "email",
+            "name",
+            "filename",
+            "link",
+            "avatar",
+            "panelIcon",
+            "panelImage"
+          ]
+        });
+
         this.items = response.data.map(data => {
           let item;
 
@@ -84,12 +87,14 @@ export default {
 
           return item;
         });
-        this.selected = -1;
-      }).catch((e) => {
+
+      } catch (error) {
         console.error(e);
         this.items = [];
+
+      } finally {
         this.selected = -1;
-      });
+      }
     }
   }
 };
