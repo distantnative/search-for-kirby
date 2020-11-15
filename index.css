@@ -1,1 +1,16 @@
-.k-search li .k-link{display:flex}.k-search li .k-icon,.k-search li .k-image{margin-right:1rem;width:32px;height:32px}.k-search li .k-image{object-fit:cover}
+.k-search li .k-link {
+  display: flex;
+}
+
+.k-search li .k-icon {
+  margin-right: 1rem;
+  width: 32px;
+  height: 32px;
+}
+
+.k-search li .k-image {
+  margin-right: 1rem;
+  width: 32px;
+  height: 32px;
+  object-fit: cover;
+}

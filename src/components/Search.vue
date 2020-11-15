@@ -1,56 +1,84 @@
 <template>
-  <div class="k-search" role="search" @click="close">
-    <div class="k-search-box" @click.stop>
+  <k-overlay ref="overlay">
+    <div class="k-search" role="search">
       <div class="k-search-input">
+        <!-- Input -->
         <input
           ref="input"
           v-model="q"
           :placeholder="$t('search') + ' …'"
           :aria-label="$t('search')"
+          :autofocus="true"
           type="text"
-          @keydown.down.prevent="down"
-          @keydown.up.prevent="up"
-          @keydown.tab.prevent="tab"
-          @keydown.enter="enter"
+          @input="hasResults = true"
+          @keydown.down.prevent="onDown"
+          @keydown.up.prevent="onUp"
+          @keydown.tab.prevent="onTab"
+          @keydown.enter="onEnter"
           @keydown.esc="close"
         >
         <k-button
           :tooltip="$t('close')"
+          :icon="isLoading ? 'loader' : 'cancel'"
           class="k-search-close"
-          icon="cancel"
           @click="close"
         />
       </div>
-      <ul>
-        <li
-          v-for="(item, itemIndex) in items.slice(0, 10)"
-          :key="item.id"
-          :data-selected="selected === itemIndex"
-          @mouseover="selected = itemIndex"
-        >
-          <k-link :to="item.link" @click="close">
-            <k-image v-if="thumb(item.image)" v-bind="thumb(item.image)" />
-            <k-icon v-else v-bind="item.icon" />
-            <div>
-              <strong>{{ item.title }}</strong>
-              <small>{{ item.info }}</small>
-            </div>
-          </k-link>
-        </li>
-      </ul>
+
+      <div
+        v-if="q && (!hasResults || items.length)"
+        class="k-search-results"
+      >
+        <!-- Results -->
+        <ul v-if="items.length" @mouseout="selected = -1">
+          <li
+            v-for="(item, itemIndex) in items"
+            :key="item.id"
+            :data-selected="selected === itemIndex"
+            @mouseover="selected = itemIndex"
+          >
+            <k-link :to="item.link" @click="close">
+              <span class="k-search-item-image">
+                <k-image
+                  v-if="imageOptions(item.image)"
+                  v-bind="imageOptions(item.image)"
+                />
+                <k-icon
+                  v-else
+                  v-bind="item.icon"
+                />
+              </span>
+              <span class="k-search-item-info">
+                <strong>{{ item.title }}</strong>
+                <small>{{ item.info }}</small>
+              </span>
+            </k-link>
+          </li>
+        </ul>
+
+        <!-- No results -->
+        <p v-else-if="!hasResults" class="k-search-empty">
+          {{ $t("search.results.none") }}
+        </p>
+      </div>
     </div>
-  </div>
+  </k-overlay>
 </template>
 
 <script>
-import thumb from "./../mixins/thumb";
 
 export default {
   extends: "k-search",
-  mixins: [thumb],
   methods: {
     async search(query) {
+      this.isLoading = true;
+
       try {
+        // Skip API call if query empty
+        if (query === "") {
+          throw new Error;
+        }
+
         const response = await this.$api.get("search", {
           q: query,
           select: [
@@ -59,59 +87,54 @@ export default {
             "email",
             "name",
             "filename",
-            "link",
-            "avatar",
+            "parent",
             "panelIcon",
             "panelImage"
           ]
         });
 
-        this.items = response.data.map(data => {
-          let item;
-
-          if (data.hasOwnProperty("email")) {
-            item = this.map_users(data);
-            item.icon = { type: "user" };
-            item.image = data.avatar ? data.avatar : null;
-
-          } else if (data.hasOwnProperty("filename")) {
-            item = this.map_files(data);
-            item.icon = data.panelIcon;
-            item.image = data.panelImage;
-
-          } else {
-            item = this.map_pages(data);
-            item.icon = data.panelIcon;
+        this.items = response.data.map(item => {
+          let data = {
+            id:    item.id,
+            icon:  {...item.panelIcon, back: "black", color: "#fff"},
+            image: {...item.panelImage, back: "pattern", cover: true}
           }
 
-          return item;
+          if (item.hasOwnProperty("email")) {
+            data.title = item.name || item.email;
+            data.link  = this.$api.users.link(item.id);
+            data.info  = item.email;
+            data.icon  = {
+              back: "black",
+              type: "user"
+            };
+
+          } else if (item.hasOwnProperty("filename")) {
+            data.title = item.filename;
+            data.link  = this.$api.files.link(
+              this.$api.pages.url(item.parent.id),
+              item.filename
+            );
+            data.info  = item.id;
+
+          } else {
+            data.title = item.title;
+            data.link  = this.$api.pages.link(item.id);
+            data.info  = item.id;
+          }
+
+          return data;
         });
 
       } catch (error) {
-        console.error(e);
         this.items = [];
 
       } finally {
-        this.selected = -1;
+        this.selected   = -1;
+        this.isLoading  = false;
+        this.hasResults = this.items.length > 0;
       }
     }
   }
 };
 </script>
-
-<style lang="scss">
-.k-search li .k-link {
-  display: flex;
-}
-.k-search li .k-icon {
-  margin-right: 1rem;
-  width: 32px;
-  height: 32px;
-}
-.k-search li .k-image {
-  margin-right: 1rem;
-  width: 32px;
-  height: 32px;
-  object-fit: cover;
-}
-</style>
