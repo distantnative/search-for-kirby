@@ -92,9 +92,8 @@ class Sqlite extends Provider
         // Drop and create fresh virtual table
         $this->store->execute('DROP TABLE IF EXISTS models');
         $this->store->execute(
-            'CREATE VIRTUAL TABLE models USING FTS5(' . $this->store->escape(implode(',', $columns)) . ', tokenize="unicode61 tokenchars \'' . $this->store->escape(static::$tokenize) . '\'");'
+            'CREATE VIRTUAL TABLE models USING FTS5(' . $this->store->escape(implode(',', $columns)) . ', tokenize="unicode61 remove_diacritics 0 tokenchars \'' . $this->store->escape(static::$tokenize) . '\'");'
         );
-
         // Insert each object into the table
         foreach ($data as $entry) {
             $this->insert($entry);
@@ -235,14 +234,19 @@ class Sqlite extends Provider
             $data[$field] = $value;
 
             // Split into words/tokens
-            $words = str_word_count($value, 1, static::$tokenize);
+            preg_match_all(
+                '/[\pL\pN\pPd]+/u',
+                $value,
+                $words
+            );
+            $words = $words[0];
 
             // Foreach token
             foreach ($words as $word) {
-                while (strlen($word) > 0) {
+                while (mb_strlen($word) > 0) {
                     // Remove first character and add to value,
                     // then repeat until the end of the word
-                    $word = substr($word, 1);
+                    $word = mb_substr($word, 1);
                     $data[$field] .= ' ' . $word;
                 }
             }
