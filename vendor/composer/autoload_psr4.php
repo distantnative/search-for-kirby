@@ -11,6 +11,5 @@ return array(
     'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-message/src'),
     'Kirby\\Search\\' => array($baseDir . '/src/models'),
     'Kirby\\' => array($vendorDir . '/getkirby/composer-installer/src'),
-    'Fuse\\' => array($vendorDir . '/loilo/fuse/src'),
     'Algolia\\AlgoliaSearch\\' => array($vendorDir . '/algolia/algoliasearch-client-php/src'),
 );

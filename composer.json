@@ -21,8 +21,7 @@
     ],
     "require": {
         "getkirby/composer-installer": "^1.1",
-        "algolia/algoliasearch-client-php": "^2.5",
-        "loilo/fuse": "^3.4"
+        "algolia/algoliasearch-client-php": "^2.5"
     },
     "config": {
         "optimize-autoloader": true

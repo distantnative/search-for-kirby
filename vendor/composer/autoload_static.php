@@ -9,14 +9,6 @@ class ComposerStaticInit8466cd401734fc5b7f8b413ae5a110bd
     public static $files = array (
         '979dffec6fa5205cabd2c2cd1e9e6b3a' => __DIR__ . '/..' . '/algolia/algoliasearch-client-php/src/Http/Psr7/functions.php',
         '6783aef8c489bbc166eee2536fe605d5' => __DIR__ . '/..' . '/algolia/algoliasearch-client-php/src/functions.php',
-        '5a6c01c6b890a6f9e22f6a75f33535c3' => __DIR__ . '/..' . '/loilo/fuse/src/Bitap/matched_indices.php',
-        'cb0217d87bec02191ba2d2597c16f1a7' => __DIR__ . '/..' . '/loilo/fuse/src/Bitap/pattern_alphabet.php',
-        '07e8a1a5effbc28d6b452bec2948bb65' => __DIR__ . '/..' . '/loilo/fuse/src/Bitap/regex_search.php',
-        'd28900056f66e13fa4e269caa8a4cd1c' => __DIR__ . '/..' . '/loilo/fuse/src/Bitap/score.php',
-        '7679d68ce06dec48d343f560108145d2' => __DIR__ . '/..' . '/loilo/fuse/src/Bitap/search.php',
-        'ae18f0d7f1399203de0fc444e860fdd9' => __DIR__ . '/..' . '/loilo/fuse/src/Helpers/deep_value.php',
-        'ea2171ac7e455f713fa8445ea3919da7' => __DIR__ . '/..' . '/loilo/fuse/src/Helpers/get.php',
-        '59ff57762b50378bb54688b7561c609b' => __DIR__ . '/..' . '/loilo/fuse/src/Helpers/is_list.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -30,10 +22,6 @@ class ComposerStaticInit8466cd401734fc5b7f8b413ae5a110bd
         array (
             'Kirby\\Search\\' => 13,
             'Kirby\\' => 6,
-        ),
-        'F' => 
-        array (
-            'Fuse\\' => 5,
         ),
         'A' => 
         array (
@@ -61,10 +49,6 @@ class ComposerStaticInit8466cd401734fc5b7f8b413ae5a110bd
         'Kirby\\' => 
         array (
             0 => __DIR__ . '/..' . '/getkirby/composer-installer/src',
-        ),
-        'Fuse\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/loilo/fuse/src',
         ),
         'Algolia\\AlgoliaSearch\\' => 
         array (
@@ -134,8 +118,7 @@ class ComposerStaticInit8466cd401734fc5b7f8b413ae5a110bd
         'Algolia\\AlgoliaSearch\\SearchIndex' => __DIR__ . '/..' . '/algolia/algoliasearch-client-php/src/SearchIndex.php',
         'Algolia\\AlgoliaSearch\\Support\\Helpers' => __DIR__ . '/..' . '/algolia/algoliasearch-client-php/src/Support/Helpers.php',
         'Algolia\\AlgoliaSearch\\Support\\UserAgent' => __DIR__ . '/..' . '/algolia/algoliasearch-client-php/src/Support/UserAgent.php',
-        'Fuse\\Bitap\\Bitap' => __DIR__ . '/..' . '/loilo/fuse/src/Bitap/Bitap.php',
-        'Fuse\\Fuse' => __DIR__ . '/..' . '/loilo/fuse/src/Fuse.php',
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Kirby\\ComposerInstaller\\CmsInstaller' => __DIR__ . '/..' . '/getkirby/composer-installer/src/ComposerInstaller/CmsInstaller.php',
         'Kirby\\ComposerInstaller\\Installer' => __DIR__ . '/..' . '/getkirby/composer-installer/src/ComposerInstaller/Installer.php',
         'Kirby\\ComposerInstaller\\Plugin' => __DIR__ . '/..' . '/getkirby/composer-installer/src/ComposerInstaller/Plugin.php',
@@ -147,7 +130,6 @@ class ComposerStaticInit8466cd401734fc5b7f8b413ae5a110bd
         'Kirby\\Search\\Index\\hasSchema' => __DIR__ . '/../..' . '/src/models/Index/hasSchema.php',
         'Kirby\\Search\\Provider' => __DIR__ . '/../..' . '/src/models/Provider.php',
         'Kirby\\Search\\Providers\\Algolia' => __DIR__ . '/../..' . '/src/models/Providers/Algolia.php',
-        'Kirby\\Search\\Providers\\Fuse' => __DIR__ . '/../..' . '/src/models/Providers/Fuse.php',
         'Kirby\\Search\\Providers\\Sqlite' => __DIR__ . '/../..' . '/src/models/Providers/Sqlite.php',
         'Kirby\\Search\\Results' => __DIR__ . '/../..' . '/src/models/Results.php',
         'Psr\\Http\\Message\\MessageInterface' => __DIR__ . '/..' . '/psr/http-message/src/MessageInterface.php',

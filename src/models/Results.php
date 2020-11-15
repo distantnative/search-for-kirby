@@ -33,11 +33,6 @@ class Results extends Collection
         // Convert the hits to model objects
         $hits = array_map([$this, 'toModel'], $results['hits'] ?? []);
 
-        // Remove hits that could not be converted
-        // $hits = array_filter($hits, function($hit) {
-        //     return is_object($hit) === true;
-        // });
-
         // Store the results
         parent::__construct($hits);
         $this->totalCount = $results['total'] ?? 0;
@@ -48,7 +43,6 @@ class Results extends Collection
             'total' => $results['total'] ?? 0,
             'limit' => $results['limit'] ?? 20,
         ]);
-
     }
 
     /**
