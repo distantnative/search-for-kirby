@@ -16,4 +16,4 @@ App::plugin('distantnative/search-for-kirby', [
     ]
 ]);
 
-include_once 'src/config/helpers.php';
+include_once 'src/helpers.php';

@@ -116,8 +116,8 @@ abstract class Provider
      */
     protected function filterByCollection(array $results, $collection = null): array
     {
-        // If no collection exists, return all results
-        if ($collection === null) {
+        // If no collection exists or it is `$site`, return all results
+        if ($collection === null || $collection === site()) {
             return $results;
         }
 

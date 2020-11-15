@@ -64,8 +64,9 @@ class Sqlite extends Provider
     protected function defaults(): array
     {
         return [
-            'file'    => kirby()->root('logs') . '/search/index.sqlite',
-            'fuzzy'   => true,
+            'file'     => kirby()->root('logs') . '/search/index.sqlite',
+            'fuzzy'    => true,
+            'operator' => 'OR'
         ];
     }
 
@@ -142,8 +143,8 @@ class Sqlite extends Provider
             return in_array($token, ['AND', 'OR', 'NOT']) ? $token : $token . '*';
         }, $tokens);
 
-        // merge query again, if unqualified insert OR operator
-        $query = implode($qualified ? ' ' : (' OR '), $tokens);
+        // merge query again, if unqualified insert operator (default OR)
+        $query = implode($qualified ? ' ' : (' ' . $options['operator'] . ' '), $tokens);
 
         // get matches from database
         try {
