@@ -107,8 +107,9 @@ export default {
         console.error(e);
 
       } finally {
+        await this.search(this.q);
         this.isProcessing = false;
-        this.search(this.q);
+        this.hasIndex = true;
       }
     },
     async search(query) {
