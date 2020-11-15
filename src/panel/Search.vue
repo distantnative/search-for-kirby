@@ -56,6 +56,15 @@
           </li>
         </ul>
 
+        <!-- No index -->
+        <p
+          v-else-if="!hasIndex"
+          class="k-search-empty k-search-index"
+          @click="index"
+        >
+          {{ rebuild }}
+        </p>
+
         <!-- No results -->
         <p v-else-if="!hasResults" class="k-search-empty">
           {{ $t("search.results.none") }}
@@ -69,7 +78,39 @@
 
 export default {
   extends: "k-search",
+  data() {
+    return {
+      hasIndex: true,
+      isProcessing: false
+    };
+  },
+  computed: {
+    rebuild() {
+      let text = this.$t("search.index.missing");
+
+      if (this.isProcessing) {
+        text += "…";
+      }
+
+      return text;
+    }
+  },
   methods: {
+    async index() {
+      this.isProcessing = true;
+
+      try {
+        await this.$api.post("search");
+        this.$store.dispatch("notification/success", this.$t("search.index.built"));
+
+      } catch (error) {
+        console.error(e);
+
+      } finally {
+        this.isProcessing = false;
+        this.search(this.q);
+      }
+    },
     async search(query) {
       this.isLoading = true;
 
@@ -127,6 +168,10 @@ export default {
         });
 
       } catch (error) {
+        if (error.key === "error.notFound") {
+          this.hasIndex = false;
+        }
+
         this.items = [];
 
       } finally {
@@ -138,3 +183,9 @@ export default {
   }
 };
 </script>
+
+<style>
+.k-search-index {
+  cursor: pointer;
+}
+</style>

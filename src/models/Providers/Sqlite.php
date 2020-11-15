@@ -82,7 +82,7 @@ class Sqlite extends Provider
      */
     public function hasIndex(): bool
     {
-        return $this->store->validateTable('model') === true;
+        return $this->store->validateTable('models') === true;
     }
 
     /**

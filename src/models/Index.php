@@ -2,6 +2,8 @@
 
 namespace Kirby\Search;
 
+use Kirby\Exception\NotFoundException;
+
 /**
  * Index class
  *
@@ -123,6 +125,10 @@ class Index
         // Don't search if nothing is queried
         if ($query === null || $query === '') {
             return new Results([]);
+        }
+
+        if ($this->hasIndex() === false) {
+            throw new NotFoundException("No index");
         }
 
         // Add default pagination
