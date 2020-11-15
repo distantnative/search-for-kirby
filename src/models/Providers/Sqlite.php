@@ -66,12 +66,6 @@ class Sqlite extends Provider
         return [
             'file'    => kirby()->root('logs') . '/search/index.sqlite',
             'fuzzy'   => true,
-            'weights' => [
-                'title'    => 5,
-                'filename' => 5,
-                'email'    => 5,
-                'name'     => 5
-            ]
         ];
     }
 
