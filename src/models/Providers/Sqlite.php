@@ -64,7 +64,7 @@ class Sqlite extends Provider
     protected function defaults(): array
     {
         return [
-            'file'    => dirname(__DIR__, 5) . '/logs/search.sqlite',
+            'file'    => kirby()->root('logs') . '/search.sqlite',
             'fuzzy'   => true,
             'weights' => [
                 'title'    => 5,
