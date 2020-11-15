@@ -64,7 +64,7 @@ class Sqlite extends Provider
     protected function defaults(): array
     {
         return [
-            'file'    => kirby()->root('logs') . '/search.sqlite',
+            'file'    => kirby()->root('logs') . '/search/index.sqlite',
             'fuzzy'   => true,
             'weights' => [
                 'title'    => 5,
@@ -73,6 +73,16 @@ class Sqlite extends Provider
                 'name'     => 5
             ]
         ];
+    }
+
+    /**
+     * Checks if an active index is already present
+     *
+     * @return bool
+     */
+    public function hasIndex(): bool
+    {
+        return $this->store->validateTable('model') === true;
     }
 
     /**

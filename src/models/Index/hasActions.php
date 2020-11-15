@@ -28,6 +28,10 @@ trait hasActions
             return false;
         }
 
+        if ($this->hasIndex() === false) {
+            return false;
+        }
+
         $object = $this->toEntry($model, $type);
         $this->provider->insert($object);
     }
@@ -43,6 +47,10 @@ trait hasActions
     {
         if ($this->isIndexable($model, $type) === false) {
             $this->delete($model);
+            return false;
+        }
+
+        if ($this->hasIndex() === false) {
             return false;
         }
 
@@ -75,6 +83,10 @@ trait hasActions
      */
     public function delete($id)
     {
+        if ($this->hasIndex() === false) {
+            return false;
+        }
+
         if (is_a($id, 'Kirby\Cms\ModelWithContent') === true) {
             $id = $id->id();
         }

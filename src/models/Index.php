@@ -100,6 +100,16 @@ class Index
     }
 
     /**
+     * Checks if an active index is already present
+     *
+     * @return bool
+     */
+    public function hasIndex(): bool
+    {
+        return $this->provider->hasIndex();
+    }
+
+    /**
      * Search in index
      *
      * @param string $query

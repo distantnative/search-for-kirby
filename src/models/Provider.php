@@ -42,6 +42,16 @@ abstract class Provider
     abstract protected function defaults(): array;
 
     /**
+     * Checks if an active index is already present
+     *
+     * @return bool
+     */
+    public function hasIndex(): bool
+    {
+        return true;
+    }
+
+    /**
      * Set options based on config and defaults
      *
      * @param Index $index

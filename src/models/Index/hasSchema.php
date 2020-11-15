@@ -62,9 +62,10 @@ trait hasSchema
             // Callback method for field
             if (is_callable($callback) === true) {
                 $data[$name] = call_user_func($callback, $model);
+            }
 
             // Field method without parameters
-            } else if (is_string($callback) === true) {
+            else if (is_string($callback) === true) {
                 $result = $model->$name();
 
                 if (is_a($result, Field::class) === false) {
@@ -75,18 +76,19 @@ trait hasSchema
 
                 // Make sure that the result is not an object
                 $data[$name] = is_object($result) ? (string)$result : $result;
+            }
 
             // Field method with parameters
-            } else if (is_array($callback) === true) {
+            else if (is_array($callback) === true) {
                 $result = $model->$name();
 
                 // Skip invalid definitions
-                if(isset($callback[0]) === false) {
+                if (isset($callback[0]) === false) {
                     $data[$name] = (string)$result;
                     continue;
                 }
 
-                if(!($result instanceof Field)) {
+                if (!($result instanceof Field)) {
                     $result = new Field($model, $name, $result);
                 }
 
@@ -95,10 +97,11 @@ trait hasSchema
                 $result     = call_user_func_array(array($result, $callback), $parameters);
 
                 // Make sure that the result is not an object
-                $data[$name] = (is_object($result))? (string)$result : $result;
+                $data[$name] = (string)$result;
+            }
 
             // No or invalid operation, convert to string
-            } else {
+            else {
                 $data[$name] = (string)$model->$name();
             }
         }
@@ -111,7 +114,6 @@ trait hasSchema
 
     /**
      * Makes an array of fields and callbacks consistent
-     * for Index::format
      *
      * @param  array $fields
      * @return array
@@ -120,7 +122,7 @@ trait hasSchema
     {
         $result = [];
 
-        foreach($fields as $name => $callback) {
+        foreach ($fields as $name => $callback) {
             // Make sure the name is always the key,
             // even if no callback method was given
             if (is_int($name) === true) {
