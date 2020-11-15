@@ -43,12 +43,10 @@ trait hasOptions
     {
         $defaults = [
             'pages' => [
-                'title',
-                'text'
+                'title'
             ],
             'files' => [
-                'filename',
-                'caption'
+                'filename'
             ],
             'users' => [
                 'email',
