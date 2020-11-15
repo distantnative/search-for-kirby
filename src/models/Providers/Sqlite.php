@@ -120,21 +120,33 @@ class Sqlite extends Provider
         $offset = ($options['page'] - 1) * $options['limit'];
         $limit  = $options['limit'];
 
-        // Define SQL for search query
-        $tokens = str_word_count($query, 1, static::$tokenize);
-        if (count($tokens) > 1) {
-            $tokens = $this->store->escape(implode('* ', $tokens) . '*');
-            $query = 'NEAR(' . $tokens . ')';
-        } else {
-            $tokens = $this->store->escape($query);
-            $query = '"' . $tokens . '"*';
-        }
+        // Construct query based on tokens:
+        // split query along whitespace
+        preg_match_all(
+            '/[\pL\pN\pPd]+/u',
+            $query,
+            $tokens
+        );
+        $tokens = $tokens[0];
 
-        // Get matches from database
+        // check if query already contains qualified operators
+        $qualified = in_array('AND', $tokens) ||
+            in_array('OR', $tokens) ||
+            in_array('NOT', $tokens);
+
+        // append * to all tokens except operators
+        $tokens = array_map(function ($token) {
+            return in_array($token, ['AND', 'OR', 'NOT']) ? $token : $token . '*';
+        }, $tokens);
+
+        // merge query again, if unqualified insert OR operator
+        $query = implode($qualified ? ' ' : (' OR '), $tokens);
+
+        // get matches from database
         try {
             $data = $this->store->models()
                 ->select('id, _type')
-                ->where('models MATCH \'' . $query . '\'');
+                ->where('models MATCH \'' . $this->store->escape($query) . '\'');
         } catch (\Exception $error) {
             return new Results([]);
         }
