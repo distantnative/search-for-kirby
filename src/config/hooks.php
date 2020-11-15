@@ -4,7 +4,6 @@ namespace Kirby\Search;
 
 use Kirby\Cms\File;
 use Kirby\Cms\Page;
-use Kirby\Cms\Site;
 use Kirby\Cms\User;
 
 $action = function () {
@@ -53,9 +52,6 @@ return [
     },
     'page.update:after' => function (Page $newPage, Page $oldPage) use ($action) {
         $action->call($this, 'update', $oldPage->id(), $newPage, 'pages');
-    },
-    'site.update:after' => function (Site $newSite, Site $oldSite) use ($action) {
-        $action->call($this, 'update', $oldSite->id(), $newSite, 'pages');
     },
     'user.changeEmail:after' => function (User $newUser, User $oldUser) use ($action) {
         $action->call($this, 'update', $oldUser->id(), $newUser, 'users');
