@@ -157,7 +157,7 @@ class Sqlite extends Provider
 
 
         // Custom weights for ranking
-        if (is_array($this->options['weights']) === true) {
+        if (is_array($this->options['weights'] ?? null) === true) {
 
             // Get all columns from table
             $columns = $this->store->query('PRAGMA table_info(models);')->toArray();
