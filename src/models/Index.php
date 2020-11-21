@@ -148,7 +148,7 @@ class Index
             }
 
             foreach ($collection as $model) {
-                if ($this->isIndexable($model) === true) {
+                if ($this->hasTemplate($model) === true) {
                     $data[] = $this->toEntry($model);
                 }
             }
