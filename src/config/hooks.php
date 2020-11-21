@@ -2,73 +2,77 @@
 
 namespace Kirby\Search;
 
+use Kirby\Cms\Event;
 use Kirby\Cms\File;
 use Kirby\Cms\Page;
 use Kirby\Cms\User;
 
-$action = function () {
-    $index = Index::instance();
-
-    if (($index->options['hooks'] ?? true) === false) {
-        return;
-    }
-
-    $args = func_get_args();
-    $action = $args[0];
-    $parameters = array_slice($args, 1);
-    $index->$action(...$parameters);
-};
-
 return [
-    'file.changeName:after' => function (File $newFile, File $oldFile) use ($action) {
-        $action->call($this, 'update', $oldFile->id(), $newFile, 'files');
-    },
-    'file.create:after' => function (File $file) use ($action) {
-        $action->call($this, 'insert', $file, 'files');
-    },
-    'file.delete:after' => function (File $file) use ($action) {
-        $action->call($this, 'delete', $file, 'files');
-    },
-    'file.update:after' => function (File $newFile, File $oldFile) use ($action) {
-        $action->call($this, 'update', $oldFile->id(), $newFile, 'files');
-    },
-    'page.changeSlug:after' => function (Page $newPage, Page $oldPage) use ($action) {
-        $action->call($this, 'move', $oldPage, $newPage, 'pages');
-    },
-    'page.changeTemplate:after' => function (Page $newPage, Page $oldPage) use ($action) {
-        $action->call($this, 'update', $oldPage->id(), $newPage, 'pages');
-    },
-    'page.changeTitle:after' => function (Page $newPage, Page $oldPage) use ($action) {
-        $action->call($this, 'update', $oldPage->id(), $newPage, 'pages');
-    },
-    'page.create:after' => function (Page $page) use ($action) {
-        $action->call($this, 'insert', $page, 'pages');
-    },
-    'page.delete:after' => function (Page $page) use ($action) {
-        $action->call($this, 'delete', $page, 'pages');
-    },
-    'page.duplicate:after' => function (Page $page) use ($action) {
-        $action->call($this, 'insert', $page, 'pages');
-    },
-    'page.update:after' => function (Page $newPage, Page $oldPage) use ($action) {
-        $action->call($this, 'update', $oldPage->id(), $newPage, 'pages');
-    },
-    'user.changeEmail:after' => function (User $newUser, User $oldUser) use ($action) {
-        $action->call($this, 'update', $oldUser->id(), $newUser, 'users');
-    },
-    'user.changeName:after' => function (User $newUser, User $oldUser) use ($action) {
-        $action->call($this, 'update', $oldUser->id(), $newUser, 'users');
-    },
-    'user.changeRole:after' => function (User $newUser, User $oldUser) use ($action) {
-        $action->call($this, 'move', $oldUser, $newUser, 'users');
-    },
-    'user.create:after' => function (User $user) use ($action) {
-        $action->call($this, 'insert', $user, 'users');
-    },
-    'user.delete:after' => function (User $user) use ($action) {
-        $action->call($this, 'delete', $user, 'users');
-    },
-    'user.update:after' => function (User $newUser, User $oldUser) use ($action) {
-        $action->call($this, 'update', $oldUser->id(), $newUser, 'users');
-    },
+    '*:after' => function (
+        Event $event,
+        Page $page = null,
+        Page $newPage = null,
+        Page $oldPage = null,
+        File $file = null,
+        File $newFile = null,
+        File $oldFile = null,
+        User $user = null,
+        User $newUser = null,
+        User $oldUser = null
+    ) {
+
+        // skip if deactivated
+        if (option('search.hooks', true) === false) {
+            return;
+        }
+
+        // skip site model
+        if ($event->type() === 'site') {
+            return;
+        }
+
+        $index = Index::instance();
+
+        // skip if no index exists yet
+        if ($index->hasIndex() === false) {
+            return false;
+        }
+
+        $model = $page ?? $file ?? $user;
+        $newModel = $newPage ?? $newFile ?? $newUser;
+        $oldModel = $oldPage ?? $oldFile ?? $oldUser;
+
+        // insert
+        if (in_array($event->action(), [
+            'create',
+            'duplicate'
+        ]) === true) {
+            return $index->insert($model);
+        }
+
+        // update
+        if (in_array($event->action(), [
+            'update',
+            'changeName',
+            'changeTemplate',
+            'changeTitle',
+            'changeEmail'
+        ]) === true) {
+            return $index->update($oldModel->id(), $newModel);
+        }
+
+        // move
+        if (in_array($event->action(), [
+            'changeSlug',
+            'changeRole',
+            'changeStatus'
+        ]) === true) {
+            return $index->move($oldModel, $newModel);
+        }
+
+        // delete
+        if ($event->action() === 'delete') {
+            return $index->delete($model);
+        }
+    }
 ];
