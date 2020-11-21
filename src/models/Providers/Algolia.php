@@ -6,7 +6,6 @@ use Exception;
 
 use Kirby\Search\Index;
 use Kirby\Search\Provider;
-use Kirby\Search\Results;
 
 use Algolia\AlgoliaSearch\SearchClient as Client;
 
@@ -37,10 +36,8 @@ class Algolia extends Provider
     {
         parent::__construct($index);
 
-        if (isset(
-            $this->options['app'],
-            $this->options['key']
-        ) === false) {
+        if (isset($this->options['app'],
+        $this->options['key']) === false) {
             throw new Exception('Please set your Algolia API credentials in the Kirby configuration.');
         }
 
@@ -90,13 +87,13 @@ class Algolia extends Provider
      *
      * @return array
      */
-    public function search(string $query, array $options, $collection = null)
+    public function search(string $query, array $options, $collection = null): array
     {
         // Generate options with defaults
         $options = array_merge($this->options, $options);
 
         // Filter by collection type
-        if ($type = Index::toCollectionType($collection)) {
+        if ($type = Index::toType($collection)) {
             $options['options']['filters'] = '_type:' . $type;
         }
 
@@ -114,13 +111,13 @@ class Algolia extends Provider
         $results = $this->filterByCollection($results, $collection);
 
         // Algolia uses zero based page indexes
-        //while Kirby's pagination starts at 1
-        return new Results([
+        // while Kirby's pagination starts at 1
+        return [
             'hits'  => $results['hits'],
             'page'  => $results['page'] + 1,
             'total' => $results['nbHits'],
             'limit' => $results['hitsPerPage']
-        ]);
+        ];
     }
 
     public function insert(array $object): void

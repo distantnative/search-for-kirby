@@ -4,7 +4,6 @@ namespace Kirby\Search\Providers;
 
 use Kirby\Search\Index;
 use Kirby\Search\Provider;
-use Kirby\Search\Results;
 
 use Kirby\Database\Database;
 use Kirby\Toolkit\Dir;
@@ -112,9 +111,9 @@ class Sqlite extends Provider
      * @param array $options
      * @param \Kirby\Cms\Collection|null $collection
      *
-     * @return \Kirby\Search\Results;
+     * @return array
      */
-    public function search(string $query, array $options, $collection = null)
+    public function search(string $query, array $options, $collection = null): array
     {
         // Generate options with defaults
         $options = array_merge($this->options, $options);
@@ -182,18 +181,18 @@ class Sqlite extends Provider
 
         // If no matches found
         if ($data === false) {
-            return new Results([]);
+            return [];
         }
 
         // Make sure only results from collection are kept
         $results = $this->filterByCollection($data->toArray(), $collection);
 
-        return new Results([
+        return [
             'hits'  => $results,
             'page'  => $page,
             'total' => $data->count(),
             'limit' => $limit
-        ]);
+        ];
     }
 
     public function insert(array $object): void

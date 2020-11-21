@@ -76,9 +76,9 @@ abstract class Provider
      * @param array $options
      * @param \Kirby\Cms\Collection|null $collection
      *
-     * @return \Kirby\Search\Results;
+     * @return array;
      */
-    abstract public function search(string $query, array $options, $collection = null);
+    abstract public function search(string $query, array $options, $collection = null): array;
 
     abstract public function replace(array $objects): void;
     abstract public function insert(array $object): void;

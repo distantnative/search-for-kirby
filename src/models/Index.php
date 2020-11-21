@@ -120,22 +120,24 @@ class Index
      *
      * @return \Kirby\Search\Results
      */
-    public function search(string $query = null, array $options = [], $collection = null)
+    public function search(string $query = null, array $options = [], $collection = null): Results
     {
-        // Don't search if nothing is queried
+        // don't search if nothing is queried
         if ($query === null || $query === '') {
             return new Results([]);
         }
 
+        // stop if not index exist yet
         if ($this->hasIndex() === false) {
             throw new NotFoundException("No index");
         }
 
-        // Add default pagination
+        // add default pagination
         $options['page']  = $options['page'] ?? 1;
         $options['limit'] = $options['limit'] ?? $this->options['limit'] ?? 10;
 
-        // Return a collection of the results
-        return $this->provider->search($query, $options, $collection);
+        // return a collection of the results
+        $results = $this->provider()->search($query, $options, $collection);
+        return new Results($results);
     }
 }
