@@ -13,6 +13,9 @@ App::plugin('distantnative/search-for-kirby', [
     ],
     'components' => [
         'search' => require 'src/config/component.php'
+    ],
+    'sections' => [
+        'search' => require 'src/panel/section.php'
     ]
 ]);
 
