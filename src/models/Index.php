@@ -8,7 +8,6 @@ use Kirby\Exception\NotFoundException;
 /**
  * Index class
  *
- * @author Lukas Bestle <lukas@getkirby.com>
  * @author Nico Hoffmann <nico@getkirby.com>
  * @license MIT
  * @link https://getkirby.com
@@ -17,9 +16,8 @@ class Index
 {
 
     use Index\hasActions;
-    use Index\hasOptions;
+    use Index\hasEntries;
     use Index\hasRules;
-    use Index\hasSchema;
 
     /**
      * Singleton class instance

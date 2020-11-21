@@ -8,7 +8,6 @@ use Kirby\Cms\ModelWithContent;
  * Modification actions
  *
  * @author Nico Hoffmann <nico@getkirby.com>
- * @author Lukas Bestle <lukas@getkirby.com>
  * @license MIT
  * @link https://getkirby.com
  */
@@ -20,19 +19,14 @@ trait hasActions
      * Used by Panel hooks
      *
      * @param \Kirby\Cms\ModelWithContent $model
-     * @param string $type
      */
-    public function insert(ModelWithContent $model, string $type = 'pages')
+    public function insert(ModelWithContent $model)
     {
-        if ($this->isIndexable($model, $type) === false) {
+        if ($this->isIndexable($model) === false) {
             return false;
         }
 
-        if ($this->hasIndex() === false) {
-            return false;
-        }
-
-        $object = $this->toEntry($model, $type);
+        $object = $this->toEntry($model);
         $this->provider->insert($object);
     }
 
@@ -41,20 +35,15 @@ trait hasActions
      * Used by Panel hooks
      *
      * @param \Kirby\Cms\ModelWithContent $model
-     * @param string $type
      */
-    public function update(string $id, ModelWithContent $model, string $type = 'pages')
+    public function update(string $id, ModelWithContent $model)
     {
-        if ($this->isIndexable($model, $type) === false) {
+        if ($this->isIndexable($model) === false) {
             $this->delete($model);
             return false;
         }
 
-        if ($this->hasIndex() === false) {
-            return false;
-        }
-
-        $object = $this->toEntry($model, $type);
+        $object = $this->toEntry($model);
         $this->provider->update($id, $object);
     }
 
@@ -64,15 +53,14 @@ trait hasActions
      *
      * @param \Kirby\Cms\ModelWithContent $old
      * @param \Kirby\Cms\ModelWithContent $new
-     * @param string $type
      */
-    public function move(ModelWithContent $old, ModelWithContent $new, string $type = 'pages')
+    public function move(ModelWithContent $old, ModelWithContent $new)
     {
         // Delete the old object
         $this->delete($old);
 
         // Insert the new object
-        $this->insert($new, $type);
+        $this->insert($new);
     }
 
     /**
@@ -83,10 +71,6 @@ trait hasActions
      */
     public function delete($id)
     {
-        if ($this->hasIndex() === false) {
-            return false;
-        }
-
         if (is_a($id, 'Kirby\Cms\ModelWithContent') === true) {
             $id = $id->id();
         }
