@@ -73,38 +73,8 @@ class Index
      */
     public function build(): void
     {
-        $data = $this->data();
-        $this->provider->replace($data);
-    }
-
-    /**
-     * Create data from all models
-     *
-     * @return array
-     */
-    public function data(): array
-    {
-        $data = [];
-
-        foreach ($this->entries() as $type => $collection) {
-            // If collection is deactivated, skip
-            if ($collection === false) {
-                continue;
-            }
-
-            // If collection is defined in query notation
-            if (is_string($collection) === true) {
-                $collection = $this->toCollection($collection);
-            }
-
-            foreach ($collection as $model) {
-                if ($this->isIndexable($model, $type) === true) {
-                    $data[] = $this->toEntry($model, $type);
-                }
-            }
-        }
-
-        return $data;
+        $data = $this->toData();
+        $this->provider()->replace($data);
     }
 
     /**
@@ -114,7 +84,17 @@ class Index
      */
     public function hasIndex(): bool
     {
-        return $this->provider->hasIndex();
+        return $this->provider()->hasIndex();
+    }
+
+    /**
+     * Returns the search provider
+     *
+     * @return \Kirby\Search\Provider
+     */
+    public function provider(): Provider
+    {
+        return $this->provider;
     }
 
     /**
@@ -145,5 +125,35 @@ class Index
         // return a collection of the results
         $results = $this->provider()->search($query, $options, $collection);
         return new Results($results);
+    }
+
+    /**
+     * Create data from all models
+     *
+     * @return array
+     */
+    public function toData(): array
+    {
+        $data = [];
+
+        foreach ($this->entries() as $type => $collection) {
+            // If collection is deactivated, skip
+            if ($collection === false) {
+                continue;
+            }
+
+            // If collection is defined in query notation
+            if (is_string($collection) === true) {
+                $collection = $this->toCollection($collection);
+            }
+
+            foreach ($collection as $model) {
+                if ($this->isIndexable($model) === true) {
+                    $data[] = $this->toEntry($model);
+                }
+            }
+        }
+
+        return $data;
     }
 }
