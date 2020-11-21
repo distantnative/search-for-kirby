@@ -19,7 +19,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => 'f48943920f9c5dc08716b73ac9ec92f88f0ca614',
+    'reference' => '8791955631e480106e48b58b552b8d7f4b945b69',
     'name' => 'distantnative/search-for-kirby',
   ),
   'versions' => 
@@ -40,7 +40,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => 'f48943920f9c5dc08716b73ac9ec92f88f0ca614',
+      'reference' => '8791955631e480106e48b58b552b8d7f4b945b69',
     ),
     'getkirby/composer-installer' => 
     array (

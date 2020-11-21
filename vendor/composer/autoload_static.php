@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit8466cd401734fc5b7f8b413ae5a110bd
+class ComposerStaticInit5851e58dea316dfd1b84a8d5a1099a5b
 {
     public static $files = array (
         '979dffec6fa5205cabd2c2cd1e9e6b3a' => __DIR__ . '/..' . '/algolia/algoliasearch-client-php/src/Http/Psr7/functions.php',
@@ -125,9 +125,8 @@ class ComposerStaticInit8466cd401734fc5b7f8b413ae5a110bd
         'Kirby\\ComposerInstaller\\PluginInstaller' => __DIR__ . '/..' . '/getkirby/composer-installer/src/ComposerInstaller/PluginInstaller.php',
         'Kirby\\Search\\Index' => __DIR__ . '/../..' . '/src/models/Index.php',
         'Kirby\\Search\\Index\\hasActions' => __DIR__ . '/../..' . '/src/models/Index/hasActions.php',
-        'Kirby\\Search\\Index\\hasOptions' => __DIR__ . '/../..' . '/src/models/Index/hasOptions.php',
+        'Kirby\\Search\\Index\\hasEntries' => __DIR__ . '/../..' . '/src/models/Index/hasEntries.php',
         'Kirby\\Search\\Index\\hasRules' => __DIR__ . '/../..' . '/src/models/Index/hasRules.php',
-        'Kirby\\Search\\Index\\hasSchema' => __DIR__ . '/../..' . '/src/models/Index/hasSchema.php',
         'Kirby\\Search\\Provider' => __DIR__ . '/../..' . '/src/models/Provider.php',
         'Kirby\\Search\\Providers\\Algolia' => __DIR__ . '/../..' . '/src/models/Providers/Algolia.php',
         'Kirby\\Search\\Providers\\Sqlite' => __DIR__ . '/../..' . '/src/models/Providers/Sqlite.php',
@@ -158,9 +157,9 @@ class ComposerStaticInit8466cd401734fc5b7f8b413ae5a110bd
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit8466cd401734fc5b7f8b413ae5a110bd::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit8466cd401734fc5b7f8b413ae5a110bd::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit8466cd401734fc5b7f8b413ae5a110bd::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit5851e58dea316dfd1b84a8d5a1099a5b::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit5851e58dea316dfd1b84a8d5a1099a5b::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit5851e58dea316dfd1b84a8d5a1099a5b::$classMap;
 
         }, null, ClassLoader::class);
     }
