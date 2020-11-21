@@ -2,6 +2,7 @@
 
 namespace Kirby\Search;
 
+use Kirby\Cms\App;
 use Kirby\Exception\NotFoundException;
 
 /**
@@ -41,9 +42,16 @@ class Index
      */
     public $options;
 
-    public function __construct()
+    /**
+     * @param \Kirby\Cms\App|null $kirby
+     */
+    public function __construct(App $kirby = null)
     {
-        $this->options = option('search', []);
+        if ($kirby === null) {
+            $kirby = kirby();
+        }
+
+        $this->options = $kirby->option('search', []);
 
         $provider = $this->options['provider'] ?? 'sqlite';
         $provider = 'Kirby\\Search\\Providers\\' . ucfirst($provider);
