@@ -2,6 +2,7 @@
 
 namespace Kirby\Search\Index;
 
+use Kirby\Cms\Collection;
 use Kirby\Cms\Field;
 use Kirby\Cms\ModelWithContent;
 use Kirby\Exception\InvalidArgumentException;
@@ -203,6 +204,30 @@ trait hasEntries
         $data['_type'] = $type;
 
         return $data;
+    }
+
+
+    /**
+     * Filter results to only include those that are
+     * part of the collection
+     *
+     * @param array $results
+     * @param \Kirby\Cms\Collection|null $collection
+     *
+     * @return array
+     */
+    protected function filterByCollection(array $results, Collection $collection = null): array
+    {
+        // If no collection exists or it is `$site`, return all results
+        if ($collection === null || $collection->parent() === site()) {
+            return $results;
+        }
+
+        // Otherwise remove the results that are not
+        // part of the collection
+        return array_filter($results, function ($result) use ($collection) {
+            return $collection->has($result['id']);
+        });
     }
 
     /**

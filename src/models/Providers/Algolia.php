@@ -93,7 +93,7 @@ class Algolia extends Provider
         $options = array_merge($this->options, $options);
 
         // Filter by collection type
-        if ($type = Index::toType($collection)) {
+        if ($collection !== null && $type = Index::toType($collection)) {
             $options['options']['filters'] = '_type:' . $type;
         }
 
@@ -106,9 +106,6 @@ class Algolia extends Provider
             // Map the plugin option to algolia option
             'hitsPerPage' => $options['limit']
         ], $options['options']));
-
-        // Make sure only results from collection are kept
-        $results = $this->filterByCollection($results, $collection);
 
         // Algolia uses zero based page indexes
         // while Kirby's pagination starts at 1

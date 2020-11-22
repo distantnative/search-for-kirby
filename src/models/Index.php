@@ -122,8 +122,13 @@ class Index
         $options['page']  = $options['page'] ?? 1;
         $options['limit'] = $options['limit'] ?? $this->options['limit'] ?? 10;
 
-        // return a collection of the results
+        // get results from provider
         $results = $this->provider()->search($query, $options, $collection);
+
+        // Make sure only results from collection are kept
+        $results['hits'] = $this->filterByCollection($results['hits'], $collection);
+
+        // return a collection of the results
         return new Results($results);
     }
 

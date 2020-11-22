@@ -89,7 +89,7 @@ class Sqlite extends Provider
     public function replace(array $data): void
     {
         // Get all field names for columns to be created
-        $columns = $this->fields($data);
+        $columns = $this->toColumns($data);
         $columns[] = 'id UNINDEXED';
         $columns[] = '_type UNINDEXED';
 
@@ -151,7 +151,7 @@ class Sqlite extends Provider
                 ->select('id, _type')
                 ->where('models MATCH \'' . $this->store->escape($query) . '\'');
         } catch (\Exception $error) {
-            return new Results([]);
+            return [];
         }
 
 
@@ -184,11 +184,8 @@ class Sqlite extends Provider
             return [];
         }
 
-        // Make sure only results from collection are kept
-        $results = $this->filterByCollection($data->toArray(), $collection);
-
         return [
-            'hits'  => $results,
+            'hits'  => $data->toArray(),
             'page'  => $page,
             'total' => $data->count(),
             'limit' => $limit
@@ -198,7 +195,7 @@ class Sqlite extends Provider
     public function insert(array $object): void
     {
         if ($this->options['fuzzy'] !== false) {
-            $object = $this->fuzzify($object);
+            $object = $this->toFuzzy($object);
         }
 
         $this->store->models()->insert($object);
@@ -210,6 +207,22 @@ class Sqlite extends Provider
     }
 
     /**
+     * Returns array of field names for models array
+     *
+     * @param array $data
+     * @return array
+     */
+    protected function toColumns(array $data): array
+    {
+        $fields = array_merge(...$data);
+
+        // Remove unsearchable fields
+        unset($fields['id'], $fields['_type']);
+
+        return array_keys($fields);
+    }
+
+    /**
      * Creates value representing each state of the fields'
      * string where you take away the first letter.
      * Needed for lookups in the middle or end of text.
@@ -218,7 +231,7 @@ class Sqlite extends Provider
      *
      * @return array
      */
-    protected function fuzzify(array $data): array
+    protected function toFuzzy(array $data): array
     {
         foreach ($data as $field => $value) {
             // Don't fuzzify unsearchable fields
