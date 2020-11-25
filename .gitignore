@@ -6,6 +6,7 @@
 
 # Parcel
 /.cache
+/.parcel-cache
 
 # tests
 .phpunit.result.cache

@@ -6,19 +6,19 @@
     'aliases' => 
     array (
     ),
-    'reference' => '8791955631e480106e48b58b552b8d7f4b945b69',
+    'reference' => '2efd36aee187b1b2ad9c0eccce2f918872d388a9',
     'name' => 'distantnative/search-for-kirby',
   ),
   'versions' => 
   array (
     'algolia/algoliasearch-client-php' => 
     array (
-      'pretty_version' => '2.7.1',
-      'version' => '2.7.1.0',
+      'pretty_version' => '2.7.2',
+      'version' => '2.7.2.0',
       'aliases' => 
       array (
       ),
-      'reference' => '19c0a6c1ef44c0aafaf6c6238c1509ebde2d1a35',
+      'reference' => 'a915109c76d5f4af67f10cd21855ea2d4c9aec9f',
     ),
     'distantnative/search-for-kirby' => 
     array (
@@ -27,7 +27,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '8791955631e480106e48b58b552b8d7f4b945b69',
+      'reference' => '2efd36aee187b1b2ad9c0eccce2f918872d388a9',
     ),
     'getkirby/composer-installer' => 
     array (

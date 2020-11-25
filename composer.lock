@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "algolia/algoliasearch-client-php",
-            "version": "2.7.1",
+            "version": "2.7.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/algolia/algoliasearch-client-php.git",
-                "reference": "19c0a6c1ef44c0aafaf6c6238c1509ebde2d1a35"
+                "reference": "a915109c76d5f4af67f10cd21855ea2d4c9aec9f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/algolia/algoliasearch-client-php/zipball/19c0a6c1ef44c0aafaf6c6238c1509ebde2d1a35",
-                "reference": "19c0a6c1ef44c0aafaf6c6238c1509ebde2d1a35",
+                "url": "https://api.github.com/repos/algolia/algoliasearch-client-php/zipball/a915109c76d5f4af67f10cd21855ea2d4c9aec9f",
+                "reference": "a915109c76d5f4af67f10cd21855ea2d4c9aec9f",
                 "shasum": ""
             },
             "require": {
@@ -76,9 +76,9 @@
             ],
             "support": {
                 "issues": "https://github.com/algolia/algoliasearch-client-php/issues",
-                "source": "https://github.com/algolia/algoliasearch-client-php/tree/2.7.1"
+                "source": "https://github.com/algolia/algoliasearch-client-php/tree/2.7.2"
             },
-            "time": "2020-11-12T13:52:28+00:00"
+            "time": "2020-11-24T10:16:46+00:00"
         },
         {
             "name": "getkirby/composer-installer",
