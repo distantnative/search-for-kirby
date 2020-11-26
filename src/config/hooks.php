@@ -20,14 +20,14 @@ return [
         User $newUser = null,
         User $oldUser = null
     ) {
-
-        // skip if deactivated
-        if (option('search.hooks', true) === false) {
+        
+        // skip unwanted event types
+        if (in_array($event->type(), ['page', 'file', 'user']) === false) {
             return;
         }
 
-        // skip site model
-        if ($event->type() === 'site') {
+        // skip if deactivated
+        if (option('search.hooks', true) === false) {
             return;
         }
 
