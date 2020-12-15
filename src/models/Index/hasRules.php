@@ -15,26 +15,55 @@ use Kirby\Cms\ModelWithContent;
  */
 trait hasRules
 {
+
     /**
-     * Checks if a specific model should be included in the Algolia index
-     * Uses the configuration option algolia.templates
+     * Runs all checks for a speciic model
      *
-     * @param  ModelWithContent $model
+     * @param  \Kirby\Cms\ModelWithContent $model
      * @return bool
      */
-    public function isIndexable(ModelWithContent $model, string $type)
+    public function isIndexable(ModelWithContent $model): bool
+    {
+        return $this->hasCollection($model) &&
+            $this->hasTemplate($model);
+    }
+
+    /**
+     * Checks if a specific model is included in the
+     * defined entry collection
+     *
+     * @param  \Kirby\Cms\ModelWithContent $model
+     * @return bool
+     */
+    public function hasCollection(ModelWithContent $model): bool
+    {
+        $type       = $this->toType($model);
+        $entry      = $this->entries($type);
+        $collection = $this->toCollection($entry);
+        return $collection->has($model);
+    }
+
+    /**
+     * Checks if a specific model's template is allowed
+     * to be indexed
+     *
+     * @param  \Kirby\Cms\ModelWithContent $model
+     * @return bool
+     */
+    public function hasTemplate(ModelWithContent $model): bool
     {
         // Get model type specific options
+        $type      = $this->toType($model);
         $templates = $this->templates($type);
-
-        // Check for the filter function
-        if ($templates instanceof Closure) {
-            return call_user_func($templates, $model) !== false;
-        }
 
         // Model type generally excluded
         if ($templates === false) {
             return false;
+        }
+
+        // Check for filter function
+        if ($templates instanceof Closure) {
+            return call_user_func($templates, $model) !== false;
         }
 
         // If none are defined, all are allowed
@@ -42,17 +71,8 @@ trait hasRules
             return true;
         }
 
-        switch ($type) {
-            case 'pages':
-                $template = $model->intendedTemplate()->name();
-                break;
-            case 'files':
-                $template = $model->template();
-                break;
-            case 'users':
-                $template = $model->role();
-                break;
-        }
+        // Defined via name of model's template
+        $template = $this->toTemplate($model);
 
         // Simple whitelist: array('project')
         if (in_array($template, $templates, true) === true) {
@@ -72,12 +92,7 @@ trait hasRules
             return $template;
         }
 
-        // Skip every value that is not a boolean or array for consistency
-        if (is_array($template) === false) {
-            return false;
-        }
-
-        // No rule was violated, the page is indexable
-        return true;
+        // No matching validation, don't allow
+        return false;
     }
 }

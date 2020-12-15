@@ -42,6 +42,16 @@ abstract class Provider
     abstract protected function defaults(): array;
 
     /**
+     * Checks if an active index is already present
+     *
+     * @return bool
+     */
+    public function hasIndex(): bool
+    {
+        return true;
+    }
+
+    /**
      * Set options based on config and defaults
      *
      * @param Index $index
@@ -66,9 +76,9 @@ abstract class Provider
      * @param array $options
      * @param \Kirby\Cms\Collection|null $collection
      *
-     * @return \Kirby\Search\Results;
+     * @return array;
      */
-    abstract public function search(string $query, array $options, $collection = null);
+    abstract public function search(string $query, array $options, $collection = null): array;
 
     abstract public function replace(array $objects): void;
     abstract public function insert(array $object): void;
@@ -77,44 +87,5 @@ abstract class Provider
     {
         $this->delete($id);
         $this->insert($object);
-    }
-
-    /**
-     * Returns array of field names for models array
-     *
-     * @param array $data
-     * @return array
-     */
-    protected function fields(array $data): array
-    {
-        $fields = array_merge(...$data);
-
-        // Remove unsearchable fields
-        unset($fields['id'], $fields['_type']);
-
-        return array_keys($fields);
-    }
-
-    /**
-     * Filter results to only include those that are
-     * part of the collection
-     *
-     * @param array $results
-     * @param \Kirby\Cms\Collection $collection
-     *
-     * @return array
-     */
-    protected function filterByCollection(array $results, $collection = null): array
-    {
-        // If no collection exists, return all results
-        if ($collection === null) {
-            return $results;
-        }
-
-        // Otherwise remove the results that are not
-        // part of the collection
-        return array_filter($results, function ($result) use ($collection) {
-            return $collection->has($result['id']);
-        });
     }
 }

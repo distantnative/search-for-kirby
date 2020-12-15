@@ -1,6 +1,7 @@
 <?php
 
 return [
-    'search.build' => 'Suchindex erstellen',
-    'search.built' => 'Suchindex erstellt'
+    'search.index.build' => 'Suchindex neu erstellen',
+    'search.index.built' => 'Suchindex erstellt',
+    'search.index.missing' => 'Suchindex fehlt. Klick zum Erstellen.',
 ];

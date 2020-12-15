@@ -2,73 +2,77 @@
 
 namespace Kirby\Search;
 
-function runHook()
-{
-    $index = Index::instance();
-
-    if (($index->options['hooks'] ?? true) === false) {
-        return;
-    }
-
-    $args = func_get_args();
-    $action = $args[0];
-    $parameters = array_slice($args, 1);
-    $index->$action(...$parameters);
-}
+use Kirby\Cms\Event;
+use Kirby\Cms\File;
+use Kirby\Cms\Page;
+use Kirby\Cms\User;
 
 return [
-    'file.changeName:after' => function ($newFile, $oldFile) {
-        runHook('update', $oldFile->id(), $newFile, 'files');
-    },
-    'file.create:after' => function ($file) {
-        runHook('insert', $file, 'files');
-    },
-    'file.delete:after' => function ($status, $file) {
-        runHook('delete', $file, 'files');
-    },
-    'file.update:after' => function ($newFile, $oldFile) {
-        runHook('update', $oldFile->id(), $newFile, 'files');
-    },
-    'page.changeSlug:after' => function ($newPage, $oldPage) {
-        runHook('move', $oldPage, $newPage, 'pages');
-    },
-    'page.changeTemplate:after' => function ($newPage, $oldPage) {
-        runHook('update', $oldPage->id(), $newPage, 'pages');
-    },
-    'page.changeTitle:after' => function ($newPage, $oldPage) {
-        runHook('update', $oldPage->id(), $newPage, 'pages');
-    },
-    'page.create:after' => function ($page) {
-        runHook('insert', $page, 'pages');
-    },
-    'page.delete:after' => function ($status, $page) {
-        runHook('delete', $page, 'pages');
-    },
-    'page.duplicate:after' => function ($page) {
-        runHook('insert', $page, 'pages');
-    },
-    'page.update:after' => function ($newPage, $oldPage) {
-        runHook('update', $oldPage->id(), $newPage, 'pages');
-    },
-    'site.update:after' => function ($newSite, $oldSite) {
-        runHook('update', $oldSite->id(), $newSite, 'pages');
-    },
-    'user.changeEmail:after' => function ($newUser, $oldUser) {
-        runHook('update', $oldUser->id(), $newUser, 'users');
-    },
-    'user.changeName:after' => function ($newUser, $oldUser) {
-        runHook('update', $oldUser->id(), $newUser, 'users');
-    },
-    'user.changeRole:after' => function ($newUser, $oldUser) {
-        runHook('move', $oldUser, $newUser, 'users');
-    },
-    'user.create:after' => function ($user) {
-        runHook('insert', $user, 'users');
-    },
-    'user.delete:after' => function ($status, $user) {
-        runHook('delete', $user, 'users');
-    },
-    'user.update:after' => function ($newUser, $oldUser) {
-        runHook('update', $oldUser->id(), $newUser, 'users');
-    },
+    '*:after' => function (
+        Event $event,
+        Page $page = null,
+        Page $newPage = null,
+        Page $oldPage = null,
+        File $file = null,
+        File $newFile = null,
+        File $oldFile = null,
+        User $user = null,
+        User $newUser = null,
+        User $oldUser = null
+    ) {
+        
+        // skip unwanted event types
+        if (in_array($event->type(), ['page', 'file', 'user']) === false) {
+            return;
+        }
+
+        // skip if deactivated
+        if (option('search.hooks', true) === false) {
+            return;
+        }
+
+        $index = Index::instance();
+
+        // skip if no index exists yet
+        if ($index->hasIndex() === false) {
+            return false;
+        }
+
+        $model = $page ?? $file ?? $user;
+        $newModel = $newPage ?? $newFile ?? $newUser;
+        $oldModel = $oldPage ?? $oldFile ?? $oldUser;
+
+        // insert
+        if (in_array($event->action(), [
+            'create',
+            'duplicate'
+        ]) === true) {
+            return $index->insert($model);
+        }
+
+        // update
+        if (in_array($event->action(), [
+            'update',
+            'changeName',
+            'changeTemplate',
+            'changeTitle',
+            'changeEmail'
+        ]) === true) {
+            return $index->update($oldModel->id(), $newModel);
+        }
+
+        // move
+        if (in_array($event->action(), [
+            'changeSlug',
+            'changeRole',
+            'changeStatus'
+        ]) === true) {
+            return $index->move($oldModel, $newModel);
+        }
+
+        // delete
+        if ($event->action() === 'delete') {
+            return $index->delete($model);
+        }
+    }
 ];

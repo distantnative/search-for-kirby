@@ -1,6 +1,7 @@
 <?php
 
 return [
-    'search.build' => 'Dizini yeniden oluştur',
-    'search.built' => 'Arama dizini oluşturuldu'
+    'search.index.build' => 'Dizini yeniden oluştur',
+    'search.index.built' => 'Arama dizini oluşturuldu',
+    'search.index.missing' => 'Dizini yeniden oluştur',
 ];

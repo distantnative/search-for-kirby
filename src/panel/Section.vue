@@ -3,8 +3,8 @@
     <div class="k-section-header">
       <k-headline>{{ headline }}</k-headline>
     </div>
-    <k-button icon="refresh" @click="build">
-      {{ $t("search.build") }}
+    <k-button icon="refresh" :disabled="isProcessing" @click="build">
+      {{ text }}
     </k-button>
   </div>
 </template>
@@ -13,7 +13,19 @@
 export default {
   data() {
     return {
-      headline: ""
+      headline: "",
+      isProcessing: false
+    }
+  },
+  computed: {
+    text() {
+      let text = this.$t("search.index.build");
+
+      if (this.isProcessing) {
+        text += "…";
+      }
+
+      return text;
     }
   },
   async created() {
@@ -22,12 +34,17 @@ export default {
   },
   methods: {
     async build() {
+      this.isProcessing = true;
+
       try {
         await this.$api.post("search");
-        this.$store.dispatch("notification/success", this.$t("search.built"));
+        this.$store.dispatch("notification/success", this.$t("search.index.built"));
 
       } catch (error) {
         console.error(e);
+
+      } finally {
+        this.isProcessing = false;
       }
     }
   }

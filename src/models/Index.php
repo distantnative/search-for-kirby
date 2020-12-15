@@ -2,10 +2,12 @@
 
 namespace Kirby\Search;
 
+use Kirby\Cms\App;
+use Kirby\Exception\NotFoundException;
+
 /**
  * Index class
  *
- * @author Lukas Bestle <lukas@getkirby.com>
  * @author Nico Hoffmann <nico@getkirby.com>
  * @license MIT
  * @link https://getkirby.com
@@ -14,9 +16,8 @@ class Index
 {
 
     use Index\hasActions;
-    use Index\hasOptions;
+    use Index\hasEntries;
     use Index\hasRules;
-    use Index\hasSchema;
 
     /**
      * Singleton class instance
@@ -39,9 +40,16 @@ class Index
      */
     public $options;
 
-    public function __construct()
+    /**
+     * @param \Kirby\Cms\App|null $kirby
+     */
+    public function __construct(App $kirby = null)
     {
-        $this->options = option('search', []);
+        if ($kirby === null) {
+            $kirby = kirby();
+        }
+
+        $this->options = $kirby->option('search', []);
 
         $provider = $this->options['provider'] ?? 'sqlite';
         $provider = 'Kirby\\Search\\Providers\\' . ucfirst($provider);
@@ -65,8 +73,63 @@ class Index
      */
     public function build(): void
     {
-        $data = $this->data();
-        $this->provider->replace($data);
+        $data = $this->toData();
+        $this->provider()->replace($data);
+    }
+
+    /**
+     * Checks if an active index is already present
+     *
+     * @return bool
+     */
+    public function hasIndex(): bool
+    {
+        return $this->provider()->hasIndex();
+    }
+
+    /**
+     * Returns the search provider
+     *
+     * @return \Kirby\Search\Provider
+     */
+    public function provider(): Provider
+    {
+        return $this->provider;
+    }
+
+    /**
+     * Search in index
+     *
+     * @param string $query
+     * @param array $options
+     * @param \Kirby\Cms\Collection $collection
+     *
+     * @return \Kirby\Search\Results
+     */
+    public function search(string $query = null, array $options = [], $collection = null): Results
+    {
+        // don't search if nothing is queried
+        if ($query === null || $query === '') {
+            return new Results([]);
+        }
+
+        // stop if not index exist yet
+        if ($this->hasIndex() === false) {
+            throw new NotFoundException("No index");
+        }
+
+        // add default pagination
+        $options['page']  = $options['page'] ?? 1;
+        $options['limit'] = $options['limit'] ?? $this->options['limit'] ?? 10;
+
+        // get results from provider
+        $results = $this->provider()->search($query, $options, $collection);
+
+        // Make sure only results from collection are kept
+        $results['hits'] = $this->filterByCollection($results['hits'], $collection);
+
+        // return a collection of the results
+        return new Results($results);
     }
 
     /**
@@ -74,7 +137,7 @@ class Index
      *
      * @return array
      */
-    public function data(): array
+    public function toData(): array
     {
         $data = [];
 
@@ -90,36 +153,12 @@ class Index
             }
 
             foreach ($collection as $model) {
-                if ($this->isIndexable($model, $type) === true) {
-                    $data[] = $this->toEntry($model, $type);
+                if ($this->hasTemplate($model) === true) {
+                    $data[] = $this->toEntry($model);
                 }
             }
         }
 
         return $data;
-    }
-
-    /**
-     * Search in index
-     *
-     * @param string $query
-     * @param array $options
-     * @param \Kirby\Cms\Collection $collection
-     *
-     * @return \Kirby\Search\Results
-     */
-    public function search(string $query = null, array $options = [], $collection = null)
-    {
-        // Don't search if nothing is queried
-        if ($query === null || $query === '') {
-            return new Results([]);
-        }
-
-        // Add default pagination
-        $options['page']  = $options['page'] ?? 1;
-        $options['limit'] = $options['limit'] ?? $this->options['limit'] ?? 10;
-
-        // Return a collection of the results
-        return $this->provider->search($query, $options, $collection);
     }
 }

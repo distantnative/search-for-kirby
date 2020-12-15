@@ -4,7 +4,6 @@ namespace Kirby\Search\Providers;
 
 use Kirby\Search\Index;
 use Kirby\Search\Provider;
-use Kirby\Search\Results;
 
 use Kirby\Database\Database;
 use Kirby\Toolkit\Dir;
@@ -64,15 +63,20 @@ class Sqlite extends Provider
     protected function defaults(): array
     {
         return [
-            'file'    => dirname(__DIR__, 5) . '/logs/search.sqlite',
-            'fuzzy'   => true,
-            'weights' => [
-                'title'    => 5,
-                'filename' => 5,
-                'email'    => 5,
-                'name'     => 5
-            ]
+            'file'     => kirby()->root('logs') . '/search/index.sqlite',
+            'fuzzy'    => true,
+            'operator' => 'OR'
         ];
+    }
+
+    /**
+     * Checks if an active index is already present
+     *
+     * @return bool
+     */
+    public function hasIndex(): bool
+    {
+        return $this->store->validateTable('models') === true;
     }
 
     /**
@@ -85,16 +89,15 @@ class Sqlite extends Provider
     public function replace(array $data): void
     {
         // Get all field names for columns to be created
-        $columns = $this->fields($data);
+        $columns = $this->toColumns($data);
         $columns[] = 'id UNINDEXED';
         $columns[] = '_type UNINDEXED';
 
         // Drop and create fresh virtual table
         $this->store->execute('DROP TABLE IF EXISTS models');
         $this->store->execute(
-            'CREATE VIRTUAL TABLE models USING FTS5(' . $this->store->escape(implode(',', $columns)) . ', tokenize="unicode61 tokenchars \'' . $this->store->escape(static::$tokenize) . '\'");'
+            'CREATE VIRTUAL TABLE models USING FTS5(' . $this->store->escape(implode(',', $columns)) . ', tokenize="unicode61 remove_diacritics 0 tokenchars \'' . $this->store->escape(static::$tokenize) . '\'");'
         );
-
         // Insert each object into the table
         foreach ($data as $entry) {
             $this->insert($entry);
@@ -108,9 +111,9 @@ class Sqlite extends Provider
      * @param array $options
      * @param \Kirby\Cms\Collection|null $collection
      *
-     * @return \Kirby\Search\Results;
+     * @return array
      */
-    public function search(string $query, array $options, $collection = null)
+    public function search(string $query, array $options, $collection = null): array
     {
         // Generate options with defaults
         $options = array_merge($this->options, $options);
@@ -120,28 +123,40 @@ class Sqlite extends Provider
         $offset = ($options['page'] - 1) * $options['limit'];
         $limit  = $options['limit'];
 
-        // Define SQL for search query
-        $tokens = str_word_count($query, 1, static::$tokenize);
-        if (count($tokens) > 1) {
-            $tokens = $this->store->escape(implode('* ', $tokens) . '*');
-            $query = 'NEAR(' . $tokens . ')';
-        } else {
-            $tokens = $this->store->escape($query);
-            $query = '"' . $tokens . '"*';
-        }
+        // Construct query based on tokens:
+        // split query along whitespace
+        preg_match_all(
+            '/[\pL\pN\pPd]+/u',
+            $query,
+            $tokens
+        );
+        $tokens = $tokens[0];
 
-        // Get matches from database
+        // check if query already contains qualified operators
+        $qualified = in_array('AND', $tokens) ||
+            in_array('OR', $tokens) ||
+            in_array('NOT', $tokens);
+
+        // append * to all tokens except operators
+        $tokens = array_map(function ($token) {
+            return in_array($token, ['AND', 'OR', 'NOT']) ? $token : $token . '*';
+        }, $tokens);
+
+        // merge query again, if unqualified insert operator (default OR)
+        $query = implode($qualified ? ' ' : (' ' . $options['operator'] . ' '), $tokens);
+
+        // get matches from database
         try {
             $data = $this->store->models()
                 ->select('id, _type')
-                ->where('models MATCH \'' . $query . '\'');
+                ->where('models MATCH \'' . $this->store->escape($query) . '\'');
         } catch (\Exception $error) {
-            return new Results([]);
+            return [];
         }
 
 
         // Custom weights for ranking
-        if (is_array($this->options['weights']) === true) {
+        if (is_array($this->options['weights'] ?? null) === true) {
 
             // Get all columns from table
             $columns = $this->store->query('PRAGMA table_info(models);')->toArray();
@@ -166,24 +181,21 @@ class Sqlite extends Provider
 
         // If no matches found
         if ($data === false) {
-            return new Results([]);
+            return [];
         }
 
-        // Make sure only results from collection are kept
-        $results = $this->filterByCollection($data->toArray(), $collection);
-
-        return new Results([
-            'hits'  => $results,
+        return [
+            'hits'  => $data->toArray(),
             'page'  => $page,
             'total' => $data->count(),
             'limit' => $limit
-        ]);
+        ];
     }
 
     public function insert(array $object): void
     {
         if ($this->options['fuzzy'] !== false) {
-            $object = $this->fuzzify($object);
+            $object = $this->toFuzzy($object);
         }
 
         $this->store->models()->insert($object);
@@ -195,6 +207,22 @@ class Sqlite extends Provider
     }
 
     /**
+     * Returns array of field names for models array
+     *
+     * @param array $data
+     * @return array
+     */
+    protected function toColumns(array $data): array
+    {
+        $fields = array_merge(...$data);
+
+        // Remove unsearchable fields
+        unset($fields['id'], $fields['_type']);
+
+        return array_keys($fields);
+    }
+
+    /**
      * Creates value representing each state of the fields'
      * string where you take away the first letter.
      * Needed for lookups in the middle or end of text.
@@ -203,7 +231,7 @@ class Sqlite extends Provider
      *
      * @return array
      */
-    protected function fuzzify(array $data): array
+    protected function toFuzzy(array $data): array
     {
         foreach ($data as $field => $value) {
             // Don't fuzzify unsearchable fields
@@ -223,14 +251,19 @@ class Sqlite extends Provider
             $data[$field] = $value;
 
             // Split into words/tokens
-            $words = str_word_count($value, 1, static::$tokenize);
+            preg_match_all(
+                '/[\pL\pN\pPd]+/u',
+                $value,
+                $words
+            );
+            $words = $words[0];
 
             // Foreach token
             foreach ($words as $word) {
-                while (strlen($word) > 0) {
+                while (mb_strlen($word) > 0) {
                     // Remove first character and add to value,
                     // then repeat until the end of the word
-                    $word = substr($word, 1);
+                    $word = mb_substr($word, 1);
                     $data[$field] .= ' ' . $word;
                 }
             }
