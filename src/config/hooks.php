@@ -20,7 +20,7 @@ return [
         User $newUser = null,
         User $oldUser = null
     ) {
-        
+
         // skip unwanted event types
         if (in_array($event->type(), ['page', 'file', 'user']) === false) {
             return;
@@ -28,6 +28,11 @@ return [
 
         // skip if deactivated
         if (option('search.hooks', true) === false) {
+            return;
+        }
+
+        // skip if entries type deactivated
+        if (option('search.entries.' . $event->type() . 's', true) === false) {
             return;
         }
 
