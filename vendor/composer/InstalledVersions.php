@@ -1,5 +1,15 @@
 <?php
 
+
+
+
+
+
+
+
+
+
+
 namespace Composer;
 
 use Composer\Semver\VersionParser;
@@ -19,19 +29,19 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '2efd36aee187b1b2ad9c0eccce2f918872d388a9',
+    'reference' => 'b34514a621f7c7e2bc952f46c36871799cf15832',
     'name' => 'distantnative/search-for-kirby',
   ),
   'versions' => 
   array (
     'algolia/algoliasearch-client-php' => 
     array (
-      'pretty_version' => '2.7.2',
-      'version' => '2.7.2.0',
+      'pretty_version' => '2.7.3',
+      'version' => '2.7.3.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'a915109c76d5f4af67f10cd21855ea2d4c9aec9f',
+      'reference' => '142a382e4649db0cb64d9eb8893872f1a4ba8dd3',
     ),
     'distantnative/search-for-kirby' => 
     array (
@@ -40,16 +50,16 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '2efd36aee187b1b2ad9c0eccce2f918872d388a9',
+      'reference' => 'b34514a621f7c7e2bc952f46c36871799cf15832',
     ),
     'getkirby/composer-installer' => 
     array (
-      'pretty_version' => '1.2.0',
-      'version' => '1.2.0.0',
+      'pretty_version' => '1.2.1',
+      'version' => '1.2.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => '240a8b2c275d61b66601feb58222b7d34bc6cf1e',
+      'reference' => 'c98ece30bfba45be7ce457e1102d1b169d922f3d',
     ),
     'psr/http-message' => 
     array (
