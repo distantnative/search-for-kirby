@@ -24,7 +24,7 @@ class Sqlite extends Provider
      *
      * @var string
      */
-    protected static $tokenize = '@';
+    protected static $tokenize = '@?!-_&:';
 
     /**
      * Constructor
@@ -96,7 +96,7 @@ class Sqlite extends Provider
         // Drop and create fresh virtual table
         $this->store->execute('DROP TABLE IF EXISTS models');
         $this->store->execute(
-            'CREATE VIRTUAL TABLE models USING FTS5(' . $this->store->escape(implode(',', $columns)) . ', tokenize="unicode61 remove_diacritics 0 tokenchars \'' . $this->store->escape(static::$tokenize) . '\'");'
+            'CREATE VIRTUAL TABLE models USING FTS5(' . $this->store->escape(implode(',', $columns)) . ', tokenize="unicode61 remove_diacritics 2 tokenchars \'' . static::$tokenize . '\'");'
         );
         // Insert each object into the table
         foreach ($data as $entry) {
@@ -115,6 +115,9 @@ class Sqlite extends Provider
      */
     public function search(string $query, array $options, $collection = null): array
     {
+        // Remove punctuation from query
+        $query = preg_replace('/[^a-z0-9]+/i', '', $query);
+
         // Generate options with defaults
         $options = array_merge($this->options, $options);
 

@@ -126,7 +126,10 @@ class Index
         $results = $this->provider()->search($query, $options, $collection);
 
         // Make sure only results from collection are kept
-        $results['hits'] = $this->filterByCollection($results['hits'], $collection);
+        $results['hits'] = $this->filterByCollection(
+            $results['hits'] ?? [],
+            $collection
+        );
 
         // return a collection of the results
         return new Results($results);
