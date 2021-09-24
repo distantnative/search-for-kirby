@@ -116,7 +116,7 @@ class Sqlite extends Provider
     public function search(string $query, array $options, $collection = null): array
     {
         // Remove punctuation from query
-        $query = preg_replace('/[^a-z0-9äöüÄÖÜß]+/i', '', $query);
+        $query = preg_replace('/[^a-z0-9äöüÄÖÜß]+/i', ' ', $query);
 
         // Generate options with defaults
         $options = array_merge($this->options, $options);
