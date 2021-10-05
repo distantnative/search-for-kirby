@@ -10,3 +10,9 @@ function search(string $query = null, $options = [], $collection = null)
         $collection
     );
 }
+
+function sanitize_field($field) {
+  // prevent text collapse when removing <br>
+  $field = preg_replace('/<br>/', ' ', $field);
+  return preg_replace('/\s+|-/m', ' ', Str::unhtml($field));
+}
