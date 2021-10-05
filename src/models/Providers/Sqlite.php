@@ -95,8 +95,10 @@ class Sqlite extends Provider
 
         // Drop and create fresh virtual table
         $this->store->execute('DROP TABLE IF EXISTS models');
+        /* echo 'CREATE VIRTUAL TABLE models USING FTS5(' . $this->store->escape(implode(',', $columns)) . ', tokenize="unicode61 remove_diacritics 2 tokenchars \'' . static::$tokenize . '\'");'; */
+        /* die; */
         $this->store->execute(
-            'CREATE VIRTUAL TABLE models USING FTS5(' . $this->store->escape(implode(',', $columns)) . ', tokenize="unicode61 remove_diacritics 2 tokenchars \'' . static::$tokenize . '\'");'
+            'CREATE VIRTUAL TABLE models USING FTS5(' . $this->store->escape(implode(',', $columns)) . ', tokenize="unicode61 remove_diacritics 1 tokenchars \'' . static::$tokenize . '\'");'
         );
         // Insert each object into the table
         foreach ($data as $entry) {
