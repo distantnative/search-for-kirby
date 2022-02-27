@@ -1,7 +1,5 @@
-> **⏸ Development on hold**  
-> Unfortunately, I am lacking time and energy to actively uphold development at the moment. With the release of Kirby 3.6, I want to settle the future of this plugin. Until then, use the plugin at your own risk - there are some known [issues](https://github.com/distantnative/search-for-kirby/issues). 
-> 
-> Apologies from my side, COVID takes its toll on me as well. If you want to help, please get in touch.
+> **⏸ Development ended - open to handover project**  
+> Unfortunately, I am lacking time and energy to actively uphold development of this plugin. I will archive the plugin as-is for the time being. Be aware that it doesn't support Kirby 3.6+. If anyone would like to take over and continue the development of this plugin, I'd be very happy - please get in touch.
  <br>
  
  # Search for Kirby
